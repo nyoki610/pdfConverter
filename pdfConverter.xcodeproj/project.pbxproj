@@ -43,9 +43,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B3D1B2ED2D6967DB00620D04 /* pdfConverterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = pdfConverterTests.xctest; path = "/Users/nyoki/Desktop/pdfConverter/build/Debug-iphoneos/pdfConverter.app/PlugIns/pdfConverterTests.xctest"; sourceTree = "<absolute>"; };
-		B3D1B2F72D6967DB00620D04 /* pdfConverterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = pdfConverterUITests.xctest; path = "/Users/nyoki/Desktop/pdfConverter/build/Debug-iphoneos/pdfConverterUITests-Runner.app/PlugIns/pdfConverterUITests.xctest"; sourceTree = "<absolute>"; };
 		B3DA3A4E2D732045009FA8FF /* pdfConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pdfConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3DA3B4A2D75F2F1009FA8FF /* pdfConverterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pdfConverterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3DA3B4B2D75F2F1009FA8FF /* pdfConverterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pdfConverterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -103,6 +103,8 @@
 			children = (
 				B3D1B2DF2D6967DA00620D04 /* pdfConverter */,
 				B3DA3A4E2D732045009FA8FF /* pdfConverter.app */,
+				B3DA3B4A2D75F2F1009FA8FF /* pdfConverterUITests.xctest */,
+				B3DA3B4B2D75F2F1009FA8FF /* pdfConverterTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -150,7 +152,7 @@
 			packageProductDependencies = (
 			);
 			productName = pdfConverterTests;
-			productReference = B3D1B2ED2D6967DB00620D04 /* pdfConverterTests.xctest */;
+			productReference = B3DA3B4B2D75F2F1009FA8FF /* pdfConverterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		B3D1B2F62D6967DB00620D04 /* pdfConverterUITests */ = {
@@ -170,7 +172,7 @@
 			packageProductDependencies = (
 			);
 			productName = pdfConverterUITests;
-			productReference = B3D1B2F72D6967DB00620D04 /* pdfConverterUITests.xctest */;
+			productReference = B3DA3B4A2D75F2F1009FA8FF /* pdfConverterUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
