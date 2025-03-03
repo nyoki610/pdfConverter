@@ -39,6 +39,8 @@ struct ProjectsListView: View {
                 
                 VStack {
                     
+                    Text("Git test")
+                    
                     Spacer()
                     HStack {
                         Spacer()
