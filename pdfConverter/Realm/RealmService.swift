@@ -15,14 +15,16 @@ class RealmService: ObservableObject {
     var realm: Realm?
     
     @Published var projects: [Project] = []
-    var selectedProjectId: String = ""
-    var selectedProject: Project {
-        projects.first { $0.id == selectedProjectId } ?? EmptyModel.project
-    }
+    var titleOptions: [Option] = []
+    var detailOptions: [Option] = []
+    
+    var selectedProjectIndex: Int = 0
+    var selectedProject: Project { projects[selectedProjectIndex] }
     
     init() {
         setupRealm()
         fetchProjects()
+        setupOptions()
         observeRealmChanges()
     }
     
@@ -66,6 +68,7 @@ class RealmService: ObservableObject {
             case .didChange:
                 print("Log: Realm database was modified.")
                 self.fetchProjects()
+                self.setupOptions()
             case .refreshRequired:
                 print("Log: Realm requires a refresh.")
             }
@@ -96,5 +99,33 @@ class RealmService: ObservableObject {
                 realm.add(realmProject)
             }
         } catch {}
+    }
+    
+    func setupOptions() {
+        titleOptions = []
+        detailOptions = []
+
+        // オプションを追加する共通処理
+        func addOption(to options: inout [Option], label: String) {
+            guard !label.isEmpty else { return }
+            
+            if let index = options.firstIndex(where: { $0.label == label }) {
+                options[index].count += 1
+            } else {
+                options.append(Option(label: label))
+            }
+        }
+
+        // プロジェクトの内容に基づいてオプションを追加
+        for project in projects {
+            for content in project.contents {
+                addOption(to: &titleOptions, label: content.title)
+                addOption(to: &detailOptions, label: content.detail)
+            }
+        }
+        
+        // count プロパティで降順にソート
+        titleOptions.sort { $0.count > $1.count }
+        detailOptions.sort { $0.count > $1.count }
     }
 }

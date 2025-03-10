@@ -6,8 +6,8 @@ import UIKit
 struct Content: Identifiable {
     let id: String
     let img: UIImage
-    let title: String
-    let detail: String
+    var title: String
+    var detail: String
     
     init(id: String, img: Data, title: String, detail: String) {
         self.id = id
@@ -27,12 +27,25 @@ struct Content: Identifiable {
 
 extension Content {
     
-    func updateSelf(realm: Realm?, img: UIImage? = nil, title: String? = nil, detail: String? = nil) {
-        guard let realm = realm,
-              let objectId = try? ObjectId(string: self.id),
-              let content = realm.object(ofType: RealmContent.self, forPrimaryKey: objectId) else {
-            print("\(self.id)")
-            print("Error: Content with specified id not found."); return
+    func updateSelf(
+        realm: Realm?,
+        img: UIImage? = nil,
+        title: String? = nil,
+        detail: String? = nil
+    ) {
+        guard let realm = realm else {
+            print("Error: Realm instance not found.")
+            return
+        }
+
+        guard let objectId = try? ObjectId(string: self.id) else {
+            print("Error: Invalid ObjectId string for id: \(self.id).")
+            return
+        }
+
+        guard let content = realm.object(ofType: RealmContent.self, forPrimaryKey: objectId) else {
+            print("Error: Content with specified id \(self.id) not found.")
+            return
         }
 
         do {

@@ -20,10 +20,9 @@ struct ProjectsListView: View {
             
             ZStack {
                 ScrollView {
-                    ForEach(realmService.projects) { project in
-                        
+                    ForEach(Array(realmService.projects.enumerated()), id: \.element.id) { index, project in
                         Button {
-                            realmService.selectedProjectId = project.id
+                            realmService.selectedProjectIndex = index
                             sharedData.path.append(.contentsList)
                         } label: {
                             projectButtonLabel(project: project)
@@ -38,8 +37,6 @@ struct ProjectsListView: View {
                 .padding(.top, 40)
                 
                 VStack {
-                    
-                    Text("Git test")
                     
                     Spacer()
                     HStack {

@@ -53,6 +53,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Realm/NonRealmObject/Content.swift,
+				Realm/NonRealmObject/Option.swift,
 				Realm/NonRealmObject/Project.swift,
 				Realm/RealmObject/RealmContent.swift,
 				Realm/RealmObject/RealmProject.swift,
