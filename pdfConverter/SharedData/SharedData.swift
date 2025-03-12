@@ -10,5 +10,4 @@ import Foundation
 class SharedData: ObservableObject {
     
     @Published var path: [ViewName] = []
-    
 }

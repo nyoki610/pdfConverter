@@ -11,7 +11,6 @@ struct MainView: View {
     @ObservedObject private var realmService = RealmService()
     @ObservedObject private var sharedData = SharedData()
     @ObservedObject private var alertSharedData = AlertSharedData()
-    @ObservedObject private var screenSizeManager = ScreenSizeManager()
     
     @ObservedObject private var customAlertHandler = CustomAlertHandler()
     
@@ -20,6 +19,7 @@ struct MainView: View {
         ZStack {
             
             ProjectsListView()
+            //TestView()
                 .environmentObject(sharedData)
                 .environmentObject(realmService)
                 .environmentObject(customAlertHandler)
@@ -44,7 +44,6 @@ struct MainView: View {
             }
         }
         .environmentObject(alertSharedData)
-        .environmentObject(screenSizeManager)
         .ignoresSafeArea(.keyboard)
         .alert(item: $alertSharedData.alertType) { _ in
             alertSharedData.createAlert()

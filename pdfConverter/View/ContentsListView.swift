@@ -5,6 +5,7 @@ import SwiftUI
 struct ContentsListView: View {
     
     @StateObject private var photoHandler = PhotoHandler()
+    @EnvironmentObject private var sharedData: SharedData
     @EnvironmentObject private var realmService: RealmService
     @EnvironmentObject private var alertSharedData: AlertSharedData
     
@@ -51,6 +52,24 @@ struct ContentsListView: View {
                     Spacer()
                 }
                 .background(.clear)
+                
+                Button {
+                    sharedData.path.append(.pdfViewer)
+                } label: {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "doc.fill")
+                        Text("PDFを出力")
+                        Spacer()
+                    }
+                    .padding(.vertical, 10)
+                    .fontWeight(.bold)
+                    .font(.system(size: 18))
+                    .foregroundColor(.white)
+                    .background(.orange)
+                    .cornerRadius(8)
+                }
+                .padding(.horizontal, 28)
             }
             
             if realmService.selectedProject.contents.isEmpty {

@@ -4,6 +4,7 @@ enum ViewName {
     
     case projectList
     case contentsList
+    case pdfViewer
     
     func viewForName() -> some View {
         
@@ -11,6 +12,7 @@ enum ViewName {
             
         case .projectList: return AnyView(ProjectsListView())
         case .contentsList: return AnyView(ContentsListView())
+        case .pdfViewer: return AnyView(PDFViewerView())
         }
     }
 }
