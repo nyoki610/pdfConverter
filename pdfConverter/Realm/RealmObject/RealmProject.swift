@@ -6,6 +6,7 @@ class RealmProject: Object {
     @Persisted var title: String
     @Persisted var createdDate: Date
     @Persisted var lastUsedDate: Date
+    @Persisted var coverPage: Data?
     @Persisted var contents: List<RealmContent>
 }
 
@@ -16,6 +17,7 @@ extension RealmProject {
                        title: self.title,
                        createdDate: self.createdDate,
                        lastUsedDate: self.lastUsedDate,
+                       coverPage: self.coverPage?.toUIImage(),
                        contents: contents.map {$0.convertToNonRealm()}
         )
     }

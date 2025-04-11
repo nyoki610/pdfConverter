@@ -7,8 +7,38 @@
 
 import SwiftUI
 
-struct EachButtonView: View {
+struct EachShuffleButtonView: View {
+    
+    let content: Content
+
+    @Binding var contentIdList: [String]
+    
+    private var index: Int? {contentIdList.firstIndex {$0 == content.id}}
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button {
+            if let index = index {
+                contentIdList.remove(at: index)
+            } else {
+                contentIdList.append(content.id)
+            }
+        } label: {
+            ZStack {
+                ImageFrame(ratio: 0.5) {
+                    Image(uiImage: content.image.resizedToFit(maxWidth: 150, maxHeight: 100))
+                }
+                
+                if let index = index {
+                    Color(.blue.opacity(0.1))
+                    Text("\(index+1)")
+                        .fontWeight(.bold)
+                        .font(.system(size: 24))
+                        .foregroundColor(.white)
+                        .frame(width: 60, height: 60)
+                        .background(Circle().fill(Color.blue.opacity(0.4)))
+                }
+            }
+            .frame(width: 150, height: 100)
+        }
     }
 }

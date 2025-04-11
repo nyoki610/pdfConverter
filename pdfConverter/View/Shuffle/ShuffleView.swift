@@ -10,6 +10,15 @@ import SwiftUI
 struct ShuffleView: View {
     
     @EnvironmentObject private var realmService: RealmService
+    @EnvironmentObject private var alertSharedData: AlertSharedData
+    
+    @State var contentIdList: [String] = []
+    @Binding var showShuffleSheet: Bool
+//    @State private var showAlert: Bool = false
+    
+    private var enableShuffleButton: Bool {
+        contentIdList.count == realmService.selectedProject.contents.count
+    }
     
     var body: some View {
         VStack {
@@ -17,6 +26,15 @@ struct ShuffleView: View {
                 .fontWeight(.bold)
                 .font(.system(size: 20))
                 .padding(.top, 20)
+                .padding(.bottom, 10)
+            
+            VStack {
+                Text("並び替える順にタップして選択してください")
+                Text("（すべての画像を選択すると並び替えを実行できます）")
+            }
+            .padding(.bottom, 10)
+            .font(.system(size: 16))
+            .fontWeight(.medium)
             
             ScrollView {
                 VStack(spacing: 16) {
@@ -25,19 +43,17 @@ struct ShuffleView: View {
                             // 左側のアイテム
                             
                             Spacer()
-                            
-                            ImageFrame(ratio: 0.5) {
-                                Image(uiImage: realmService.selectedProject.contents[index].image.resizedToFit(maxWidth: 150, maxHeight: 100))
-                            }
+
+                            EachShuffleButtonView(content: realmService.selectedProject.contents[index],
+                                                  contentIdList: $contentIdList)
                                 
                             // 右側のアイテム（存在する場合）
                             if index + 1 < realmService.selectedProject.contents.count {
                                 
                                 Spacer()
                                 
-                                ImageFrame(ratio: 0.5) {
-                                    Image(uiImage: realmService.selectedProject.contents[index+1].image.resizedToFit(maxWidth: 150, maxHeight: 100))
-                                }
+                                EachShuffleButtonView(content: realmService.selectedProject.contents[index+1],
+                                                      contentIdList: $contentIdList)
                             }
                             
                             Spacer()
@@ -47,6 +63,34 @@ struct ShuffleView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 20)
             }
+            
+            VStack {
+                
+                TLButton(systemName: "shuffle",
+                         label: "並び替え",
+                         color: .green.opacity(enableShuffleButton ? 1.0 : 0.7)) {
+//                    guard contentIdList.count == realmService.selectedProject.contents.count else {
+//                        showAlert = true
+//                        return
+//                    }
+                    realmService.selectedProject.shuffleContents(realm: realmService.realm,
+                                                                 contentIdList: contentIdList)
+                    contentIdList = []
+                }
+                         .disabled(!enableShuffleButton)
+//                         .alert(isPresented: $showAlert) {
+//                             Alert(title: Text("未選択の画像があります"),
+//                                   message: Text("並び替えを行うためには\nすべての画像を選択してください"),
+//                                   dismissButton: .default(Text("閉じる")))
+//                         }
+                
+                TLButton(systemName: "xmark",
+                         label: "閉じる",
+                         color: .gray) {
+                    showShuffleSheet = false
+                }
+            }
+            .padding(.horizontal, 20)
             
             Spacer()
         }

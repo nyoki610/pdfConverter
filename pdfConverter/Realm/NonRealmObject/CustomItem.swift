@@ -20,10 +20,8 @@ protocol CustomItem: View {
 
 struct CustomCircle: CustomItem {
     
-    /// 中心からの位置を -1.0〜1.0 の割合で表示
+
     var positionRate: CGSize = CGSize(width: 0.0, height: 0.0)
-    
-    /// 大きさを直接指定
     var size: CGFloat = 80
     
     private let circleWidth: CGFloat = 4
@@ -37,10 +35,7 @@ struct CustomCircle: CustomItem {
 
 struct CustomArrow: CustomItem {
     
-    /// 中心からの位置を -1.0〜1.0 の割合で表示
     var positionRate: CGSize = CGSize(width: 0.0, height: 0.0)
-    
-    /// 大きさを直接指定
     var size: CGFloat = 80
     
     var body: some View {

@@ -41,31 +41,29 @@ struct ProjectsListView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button {
+                        TLButton(systemName: "plus.circle.fill",
+                                 label: "新規プロジェクトを作成",
+                                 color: .green) {
                             customAlertHandler.controllCustomAlert(
                                 alertTitle: "新規プロジェクトを作成",
                                 label: "プロジェクト名を入力",
                                 action: createNewProject)
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Image(systemName: "plus.circle.fill")
-                                Text("新規プロジェクトを作成")
-                                Spacer()
-                            }
-                            .padding(.vertical, 10)
-                            .fontWeight(.bold)
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .background(.green)
-                            .cornerRadius(8)
                         }
-                        .buttonStyle(.plain)
                         .padding(.horizontal, 20)
                         Spacer()
                     }
                     .padding(.vertical, 10)
                     .background(.clear)
+                }
+                
+                if realmService.projects.isEmpty {
+                    VStack {
+                        Text("プロジェクトがありません")
+                        Text("新規作成してください")
+                    }
+                    .font(.system(size: 20))
+                    .fontWeight(.bold)
+                    .foregroundColor(.gray)
                 }
             }
             .background(Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 0.3))
@@ -80,17 +78,33 @@ struct ProjectsListView: View {
     private func projectButtonLabel(project: Project) -> some View {
         
         VStack(alignment: .leading) {
-
+            
             Text(project.title)
                 .fontWeight(.bold)
                 .padding(.bottom, 4)
+
             Text("作成日 \(project.createdDate.formattedString())")
             Text("最終更新日 \(project.lastUsedDate.formattedString())")
+            Text("要素数 \(project.contents.count)")
+            
             HStack {
-                Text("要素数 \(project.contents.count)")
+                TLButton(systemName: "pencil.line",
+                         label: "プロジェクト名を変更",
+                         color: .blue,
+                         size: 14) {
+                    customAlertHandler.controllCustomAlert(
+                        alertTitle: "プロジェクト名を変更",
+                        label: "プロジェクト名を入力",
+                        action: {
+                            project.updateSelf(realm: realmService.realm,
+                                               title: customAlertHandler.userInput)
+                        })
+                }
+                         .padding(.trailing, 40)
+                
                 Spacer()
                 
-                Button {
+                DeleteButton {
                     alertSharedData.showSelectiveAlert(
                         title: "プロジェクトを削除",
                         message: "この操作は取り消せません",
@@ -100,15 +114,7 @@ struct ProjectsListView: View {
                         rightButtonAction: {
                             project.deleteSelf(realm: realmService.realm)
                         })
-                } label: {
-                    HStack {
-                        Image(systemName: "trash.fill")
-                        Text("削除")
-                    }
-                    .fontWeight(.bold)
-                    .foregroundColor(.red)
                 }
-                .buttonStyle(.automatic)
             }
         }
         .foregroundColor(.black)
@@ -121,13 +127,13 @@ struct ProjectsListView: View {
                 .stroke(.black.opacity(0.3), lineWidth: 2)
         )
     }
-
     
     private func createNewProject() {
         let newProject = Project(id: UUID().uuidString,
                                  title: customAlertHandler.userInput,
                                  createdDate: Date(),
                                  lastUsedDate: Date(),
+                                 coverPage: nil,
                                  contents: [])
         realmService.addNewRealmProject(add: newProject.convertToRealm())
     }

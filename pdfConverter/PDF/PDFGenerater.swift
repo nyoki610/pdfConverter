@@ -10,7 +10,30 @@ import PDFKit
 
 class PDFGenerator {
     
-    static func generatePDF(from contents: [Content]) -> PDFDocument? {
+    static var tempURL: URL {
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let tempURL = tempDirectory.appendingPathComponent("shared.pdf")
+        return tempURL
+    }
+    
+    static func savePDF(from project: Project, completion: @escaping (Bool) -> Void) {
+        guard let pdfDocument = generatePDF(from: project),
+              let data = pdfDocument.dataRepresentation() else {
+            completion(false)
+            return
+        }
+        
+        // 常に同じファイル名で上書き保存
+        do {
+            try data.write(to: tempURL, options: .atomic)
+            completion(true)
+        } catch {
+            print("PDFの一時保存に失敗しました: \(error)")
+            completion(false)
+        }
+    }
+    
+    static func generatePDF(from project: Project) -> PDFDocument? {
 
         let bounds = CGRect(x: 0, y: 0, width: PageLayout.A4_WIDTH, height: PageLayout.A4_HEIGHT)
         let renderer = UIGraphicsPDFRenderer(bounds: bounds)
@@ -18,7 +41,7 @@ class PDFGenerator {
         let data = renderer.pdfData { context in
             
             // ページごとの処理
-            for (index, content) in contents.enumerated() {
+            for (index, content) in project.contents.enumerated() {
                 // 新しいページを開始
                 if index % 3 == 0 {
                     context.beginPage()
@@ -35,25 +58,25 @@ class PDFGenerator {
                 let imagePadding: CGFloat = 10
                     
                 context.cgContext.insertImage(
-                    image: content.img,
+                    image: content.pdfImage,
                     cell: cellHandler.image,
                     padding: imagePadding
                 )
                 context.cgContext.insertText(
-                    text: String(index),
+                    text: String(index+1),
                     cell: cellHandler.index,
                     verticalAlignment: .center,
                     horizontalAlignment: .center
                 )
                 context.cgContext.insertText(
-                    text: content.title,
+                    text: content.issue,
                     cell: cellHandler.title,
                     verticalAlignment: .center,
                     horizontalAlignment: .leading,
                     padding: 10
                 )
                 context.cgContext.insertText(
-                    text: content.detail,
+                    text: content.repairContent,
                     cell: cellHandler.detail,
                     verticalAlignment: .leading,
                     horizontalAlignment: .leading,

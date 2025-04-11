@@ -3,12 +3,11 @@ import SwiftUI
 import RealmSwift
 
 class PhotoHandler: ObservableObject {
-    
+
     @Published var selectedItems: [PhotosPickerItem] = []
+    @Published var selectedCoverPage: [PhotosPickerItem] = []
     
-    // 非同期処理で画像を更新
-    func addContents(project: Project, realm: Realm?) {
-        
+    func addContents(project: Project, realm: Realm?, completion: @escaping () -> Void) {
         // 非同期で画像を読み込む
         let group = DispatchGroup() // 複数の非同期処理を同期的に待機
         var newContents: [Content] = []
@@ -20,7 +19,11 @@ class PhotoHandler: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let image?):
-                        let newContent = Content(id: "", img: image, title: "", detail: "")
+                        let newContent = Content(id: UUID().uuidString,
+                                                 image: image.toUIImage(),
+                                                 issue: "",
+                                                 repairContent: "",
+                                                 customImage: nil)
                         newContents.append(newContent)
                     case .failure(let error):
                         print("Error loading image: \(error)")
@@ -36,6 +39,29 @@ class PhotoHandler: ObservableObject {
         group.notify(queue: .main) {
             project.updateSelf(realm: realm, add: newContents)
             self.selectedItems = []
+            
+            // 完了通知
+            completion() // ここで外部に完了を通知
         }
+    }
+    
+    func addCoverPage(project: Project, realm: Realm?) {
+        
+        guard selectedCoverPage.count == 1 else { print("the count does not match"); return }
+        
+        selectedCoverPage[0].loadTransferable(type: Data.self) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image?):
+                    project.updateSelf(realm: realm, coverPage: image)
+                case .failure(let error):
+                    print("Error loading image: \(error)")
+                default:
+                    break
+                }
+            }
+        }
+        
+        selectedCoverPage = []
     }
 }

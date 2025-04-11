@@ -52,10 +52,12 @@
 		B3DA3A422D72D489009FA8FF /* Exceptions for "pdfConverter" folder in "pdfConverterUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Model/Option.swift,
 				Realm/NonRealmObject/Content.swift,
-				Realm/NonRealmObject/Option.swift,
+				Realm/NonRealmObject/CustomItem.swift,
 				Realm/NonRealmObject/Project.swift,
 				Realm/RealmObject/RealmContent.swift,
+				Realm/RealmObject/RealmCustomCircle.swift,
 				Realm/RealmObject/RealmProject.swift,
 			);
 			target = B3D1B2F62D6967DB00620D04 /* pdfConverterUITests */;

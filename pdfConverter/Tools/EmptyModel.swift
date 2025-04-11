@@ -5,11 +5,11 @@
 //  Created by 二木裕也 on 2025/03/01.
 //
 
-import Foundation
+import SwiftUI
 
 enum EmptyModel {
     
-    static let project = Project(id: "", title: "", createdDate: Date(), lastUsedDate: Date(), contents: [])
+    static let project = Project(id: "", title: "", createdDate: Date(), lastUsedDate: Date(), coverPage: nil, contents: [])
     
-    static let content = Content(id: "", img: Data(), title: "", detail: "")
+    static let content = Content(id: "",image: UIImage(), issue: "", repairContent: "", customImage: nil)
 }

@@ -19,7 +19,6 @@ struct MainView: View {
         ZStack {
             
             ProjectsListView()
-            //TestView()
                 .environmentObject(sharedData)
                 .environmentObject(realmService)
                 .environmentObject(customAlertHandler)

@@ -36,4 +36,21 @@ extension UIImage {
         draw(in: CGRect(origin: .zero, size: newSize))
         return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
     }
+    
+    @ViewBuilder
+    private func resizedImageView(frame: CGSize) -> some View {
+        ZStack {
+            Image(uiImage: resizedToFit(maxWidth: frame.width, maxHeight: frame.height))
+                .resizable()
+                .interpolation(.high)
+                .scaledToFit()
+                .drawingGroup()
+        }
+    }
+    
+    @MainActor func render(frame: CGSize) -> UIImage? {
+        let renderer = ImageRenderer(content: resizedImageView(frame: frame))
+        renderer.scale = UIScreen.main.scale
+        return renderer.uiImage
+    }
 }

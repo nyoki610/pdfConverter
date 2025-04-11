@@ -75,20 +75,23 @@ class RealmService: ObservableObject {
         }
     }
     
-    func createNewRealmProject() {
-        guard let realm = realm else { return }
-        
-        let newProject = Project(id: UUID().uuidString, title: "", createdDate: Date(), lastUsedDate: Date(), contents: [])
-
-        do {
-            try realm.write {
-                realm.add(newProject.convertToRealm())
-                print("Log: New project added successfully.")
-            }
-        } catch {
-            print("Error: Failed to add new project - \(error.localizedDescription)")
-        }
-    }
+//    func createNewRealmProject() {
+//        guard let realm = realm else { return }
+//        
+//        let newProject = Project(id: UUID().uuidString,
+//                                 title: "", createdDate: Date(),
+//                                 lastUsedDate: Date(),
+//                                 contents: [])
+//
+//        do {
+//            try realm.write {
+//                realm.add(newProject.convertToRealm())
+//                print("Log: New project added successfully.")
+//            }
+//        } catch {
+//            print("Error: Failed to add new project - \(error.localizedDescription)")
+//        }
+//    }
     
     func addNewRealmProject(add realmProject: RealmProject) {
         
@@ -119,8 +122,8 @@ class RealmService: ObservableObject {
         // プロジェクトの内容に基づいてオプションを追加
         for project in projects {
             for content in project.contents {
-                addOption(to: &titleOptions, label: content.title)
-                addOption(to: &detailOptions, label: content.detail)
+                addOption(to: &titleOptions, label: content.issue)
+                addOption(to: &detailOptions, label: content.repairContent)
             }
         }
         

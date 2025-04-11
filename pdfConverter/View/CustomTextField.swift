@@ -31,8 +31,8 @@ struct CustomTextField: View {
                 if !newValue {
                     content.updateSelf(
                         realm: realmService.realm,
-                        title: (targetType == .title) ? userInput : nil,
-                        detail: (targetType == .detail) ? userInput : nil
+                        issue: (targetType == .issue) ? userInput : nil,
+                        repairContent: (targetType == .repairContent) ? userInput : nil
                     )
                 }
             }

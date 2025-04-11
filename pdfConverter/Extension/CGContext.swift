@@ -10,16 +10,6 @@ import PDFKit
 
 extension CGContext {
     
-//    func insertLine(x: CGFloat, y: CGFloat, length: CGFloat, orientation: LineOrientation) {
-//        let endPoint: CGPoint = switch orientation {
-//            case .horizontal: CGPoint(x: x + length, y: y)
-//            case .vertical: CGPoint(x: x, y: y + length)
-//        }
-//        move(to: CGPoint(x: x, y: y))
-//        addLine(to: endPoint)
-//        strokePath()
-//    }
-    
     func insertStroke(cell: Cell) {
         let rect = CGRect(x: cell.startX, y: cell.startY, width: cell.width, height: cell.height)
         stroke(rect)

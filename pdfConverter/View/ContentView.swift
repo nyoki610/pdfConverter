@@ -12,66 +12,100 @@ struct ContentView: View {
     @EnvironmentObject private var realmService: RealmService
     @EnvironmentObject private var alertSharedData: AlertSharedData
     
-    @State private var content: Content
-    @State private var userInputTitle: String
-    @State private var userInputDetail: String
+    private let contentId: String
+    private var content: Content {
+        realmService.selectedProject.contents.first(where: {$0.id==contentId}) ?? EmptyModel.content
+    }
+    private var index: Int? {
+        realmService.selectedProject.contents.firstIndex(where: {$0.id==contentId})
+    }
+    
+    @State private var userInputTitle: String = ""
+    @State private var userInputDetail: String = ""
     
     @State private var showSheet: Bool = false
     @State private var selectedTargetType: TargetType?
     
-    init(content: Content) {
-        self.content = content
-        self.userInputTitle = content.title
-        self.userInputDetail = content.detail
+    /// 親Viewと共有する変数 ImageEditorViewの表示内容を制御
+    @Binding var selectedContentId: String
+    @Binding var showImageEditorView: Bool
+    
+    init(contentId: String, selectedContentId: Binding<String>, showImageEditorView: Binding<Bool>) {
+        self.contentId = contentId
+        _selectedContentId = selectedContentId
+        _showImageEditorView = showImageEditorView
     }
     
     enum TargetType: String {
-        case title = "詳細"
-        case detail = "修繕内容"
+        case issue = "問題点"
+        case repairContent = "修繕内容"
         
         func options(realmService: RealmService) -> [Option] {
             switch self {
-            case .title: return realmService.titleOptions
-            case .detail: return realmService.detailOptions
+            case .issue: return realmService.titleOptions
+            case .repairContent: return realmService.detailOptions
             }
         }
     }
     
+    private let frameWidth: CGFloat = 300
+    private let frameHeight: CGFloat = 200
+
     var body: some View {
         VStack(spacing: 0) {
             
             HStack {
+                
+                if let index = index {
+                    VStack {
+                        Text(String(index+1))
+                            .fontWeight(.bold)
+                            .font(.system(size: 18))
+                    }
+                    .padding(.vertical, 4)
+                    .frame(width: 48)
+                    .cornerRadius(8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(.black.opacity(0.3), lineWidth: 2)
+                    )
+                }
+                
                 Spacer()
-                deleteButton
+                DeleteButton {
+                    alertSharedData.showSelectiveAlert(
+                        title: "写真を削除",
+                        message: "この操作は取り消せません",
+                        closeAction: {},
+                        rightButtonLabel: "削除",
+                        rightButtonType: AlertSharedData.RightButtonType.destructive,
+                        rightButtonAction: {
+                            realmService.selectedProject.updateSelf(
+                                realm: realmService.realm,
+                                delete: content
+                            )
+                        }
+                    )
+                }
             }
             .padding(.bottom, 20)
             
-            VStack {
-                Spacer()
-                
-                HStack {
-                    Spacer()
-                    Image(uiImage: content.img.resizedToFit(maxWidth: 300, maxHeight: 160))
-
-                    Spacer()
+            if !content.id.isEmpty {
+                ImageFrame {
+                    Image(uiImage: content.pdfImage.resizedToFit(maxWidth: 300, maxHeight: 200))
                 }
-                Spacer()
+                .padding(.bottom, 10)
             }
-            .frame(width: 300, height: 160)
-            .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .stroke(.black.opacity(0.3), lineWidth: 2)
-            )
-            .padding(.bottom, 4)
-            
+
             HStack {
                 Spacer()
                 Button {
-                    
+                    selectedContentId = content.id
+                    showImageEditorView = true
                 } label: {
                     HStack {
-                        Image(systemName: "pencil.line")
-                        Text("画像を編集")
+                        Image(systemName: "plus.circle")
+                        Text("画像に図形を挿入")
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
@@ -83,8 +117,8 @@ struct ContentView: View {
             }
             .padding(.bottom, 10)
             
-            userInputView(content: content, targetType: .title)
-            userInputView(content: content, targetType: .detail)
+            userInputView(content: content, targetType: .issue)
+            userInputView(content: content, targetType: .repairContent)
         }
         .padding(.horizontal, 30)
         .padding(.vertical, 20)
@@ -107,33 +141,10 @@ struct ContentView: View {
                 selectedTargetType = nil
             }
         }
-    }
-    
-    @ViewBuilder
-    private var deleteButton: some View {
-        Button {
-            alertSharedData.showSelectiveAlert(
-                title: "写真を削除",
-                message: "この操作は取り消せません",
-                closeAction: {},
-                rightButtonLabel: "削除",
-                rightButtonType: AlertSharedData.RightButtonType.destructive,
-                rightButtonAction: {
-                    realmService.selectedProject.updateSelf(
-                        realm: realmService.realm,
-                        delete: content
-                    )
-                }
-            )
-        } label: {
-            HStack {
-                Image(systemName: "trash.fill")
-                Text("削除")
-            }
-            .fontWeight(.bold)
-            .foregroundColor(.red)
+        .onAppear {
+            self.userInputTitle = content.issue
+            self.userInputDetail = content.repairContent
         }
-        .buttonStyle(.automatic)
     }
     
     private func userInputView(
@@ -148,7 +159,7 @@ struct ContentView: View {
             }
 
             CustomTextField(
-                userInput: (targetType == .title) ? $userInputTitle : $userInputDetail,
+                userInput: (targetType == .issue) ? $userInputTitle : $userInputDetail,
                 content: content,
                 targetType: targetType
             )
@@ -194,12 +205,12 @@ extension ContentView {
                     Button {
                         content.updateSelf(
                             realm: realmService.realm,
-                            title: selectedTargetType == .title ? option.label : nil,
-                            detail: selectedTargetType == .detail ? option.label : nil
+                            issue: selectedTargetType == .issue ? option.label : nil,
+                            repairContent: selectedTargetType == .repairContent ? option.label : nil
                         )
                         switch selectedTargetType {
-                        case .title: userInputTitle = option.label
-                        case .detail: userInputDetail = option.label
+                        case .issue: userInputTitle = option.label
+                        case .repairContent: userInputDetail = option.label
                         default: break
                         }
                         selectedTargetType = nil
