@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct CellHandler {
-    
+struct ContentCell {
+
     let content: Cell
     let image: Cell
     let index: Cell
@@ -55,4 +55,8 @@ struct CellHandler {
             height: PageLayout.detailCellHeight
         )
     }
+}
+
+struct ContentCell {
+    
 }
