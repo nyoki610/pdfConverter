@@ -68,25 +68,21 @@ struct ShuffleView: View {
                 
                 TLButton(systemName: "shuffle",
                          label: "並び替え",
-                         color: .green.opacity(enableShuffleButton ? 1.0 : 0.7)) {
-//                    guard contentIdList.count == realmService.selectedProject.contents.count else {
-//                        showAlert = true
-//                        return
-//                    }
+                         color: .green.opacity(enableShuffleButton ? 1.0 : 0.7),
+                         verticalPadding: .fixed(nil),
+                         horizontalPadding: .fixed(nil)) {
+
                     realmService.selectedProject.shuffleContents(realm: realmService.realm,
                                                                  contentIdList: contentIdList)
                     contentIdList = []
                 }
                          .disabled(!enableShuffleButton)
-//                         .alert(isPresented: $showAlert) {
-//                             Alert(title: Text("未選択の画像があります"),
-//                                   message: Text("並び替えを行うためには\nすべての画像を選択してください"),
-//                                   dismissButton: .default(Text("閉じる")))
-//                         }
                 
                 TLButton(systemName: "xmark",
                          label: "閉じる",
-                         color: .gray) {
+                         color: .gray,
+                         verticalPadding: .fixed(nil),
+                         horizontalPadding: .fixed(nil)) {
                     showShuffleSheet = false
                 }
             }

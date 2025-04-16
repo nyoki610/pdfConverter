@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct CustomAlert: View {
+struct CustomAlert: ResponsiveView {
     
+    @Environment(\.deviceType) var deviceType
     @EnvironmentObject private var alertSharedData: AlertSharedData
 
     let alertTitle: String
@@ -30,7 +31,7 @@ struct CustomAlert: View {
         VStack {
             
             Text(alertTitle)
-                .padding(.top, 20)
+                .padding(.top, responsiveSize(20, 24))
                 .fontWeight(.medium)
             
             VStack {
@@ -40,7 +41,7 @@ struct CustomAlert: View {
                     .focused($focusState)
                     .padding(4)
             }
-            .frame(width: 200)
+            .frame(width: responsiveSize(200, 300))
             .background(Color(red: 0.96, green: 0.96, blue: 0.96, opacity: 1.0))
             .cornerRadius(4)
             .padding()
@@ -54,7 +55,8 @@ struct CustomAlert: View {
                     HStack {
                         Text("キャンセル")
                     }
-                    .frame(width: 120, height: 40)
+                    .frame(width: responsiveSize(120, 180),
+                           height: responsiveSize(40, 60))
                     .overlay(
                         VStack {
                             Spacer()
@@ -72,10 +74,11 @@ struct CustomAlert: View {
                     HStack {
                         Text("完了")
                     }
-                    .frame(width: 120, height: 40)
+                    .frame(width: responsiveSize(120, 180),
+                           height: responsiveSize(40, 60))
                 }
             }
-            .frame(height: 40)
+            .frame(height: responsiveSize(40, 60))
             .overlay(
                 Rectangle()
                     .frame(height: 0.5)
@@ -86,7 +89,7 @@ struct CustomAlert: View {
         }
         .background(.white)
         .cornerRadius(8)
-        .font(.system(size: 14))
+        .font(.system(size: responsiveSize(14, 18)))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color(red: 0.7, green: 0.7, blue: 0.7, opacity: 1), lineWidth: 0.5)

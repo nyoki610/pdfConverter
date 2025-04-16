@@ -9,6 +9,9 @@ import SwiftUI
 
 
 struct ImageFrame<Content: View>: View {
+    
+    @Environment(\.deviceType) var deviceType
+    
     let contentView: () -> Content
     let ratio: CGFloat
     
@@ -21,7 +24,8 @@ struct ImageFrame<Content: View>: View {
         ZStack {
             contentView()
         }
-        .frame(width: 300 * ratio, height: 200 * ratio)
+        .frame(width: deviceType.photoSize.width * ratio,
+               height: deviceType.photoSize.height * ratio)
         .padding(4)
         .overlay(
             RoundedRectangle(cornerRadius: 4)

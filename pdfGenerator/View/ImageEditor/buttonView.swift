@@ -27,12 +27,13 @@ extension ImageEditorView {
                         .padding(.bottom, 10)
                 }
                 .fontWeight(.medium)
-                
-                Spacer()
+                .padding(.bottom, 20)
                 
                 TLButton(systemName: "arrow.counterclockwise",
                          label: "過去の編集内容をリセット",
-                         color: .red.opacity(0.8)) {
+                         color: .red.opacity(0.8),
+                         verticalPadding: .fixed(nil),
+                         horizontalPadding: .fixed(40)) {
                     content.updateCustomImage(realm: realmService.realm,
                                               customImage: nil)
                     /// 念の為リセット
@@ -57,18 +58,23 @@ extension ImageEditorView {
             if customCircle == nil && customArrow == nil {
                 TLButton(systemName: "xmark",
                          label: "閉じる",
-                         color: .gray) {
+                         color: .gray,
+                         verticalPadding: .none,
+                         horizontalPadding: .infinity) {
                     showImageEditorView = false
                     /// 念の為初期化
                     /// （ここで初期化しないと次回表示時にボタンのラベルが正しく表示されない）
                     customCircle = nil
                     customArrow = nil
                 }
-                         .padding(.horizontal, 20)
+                         .padding(.horizontal, 40)
+                         .padding(.bottom, 40)
             } else {
                 TLButton(systemName: "square.and.arrow.down",
                          label: "保存して閉じる",
-                         color: .blue) {
+                         color: .blue,
+                         verticalPadding: .none,
+                         horizontalPadding: .infinity) {
                     
                     if customCircle != nil || customArrow != nil {
                         let renderer = ImageRenderer(content: dragView(isScreenShot: true))
@@ -84,7 +90,8 @@ extension ImageEditorView {
                     customCircle = nil
                     customArrow = nil
                 }
-                         .padding(.horizontal, 20)
+                         .padding(.horizontal, 40)
+                         .padding(.bottom, 40)
             }
         }
     }
@@ -101,7 +108,9 @@ extension ImageEditorView {
             
             TLButton(systemName: "plus",
                      label: "\(itemType.rawValue)を追加",
-                     color: .green) {
+                     color: .green,
+                     verticalPadding: .fixed(nil),
+                     horizontalPadding: .fixed(40)) {
                 /// customItem を初期化
                 switch itemType {
                 case .circle: customCircle = CustomCircle()
@@ -139,11 +148,28 @@ extension ImageEditorView {
             
             
             VStack {
-                Text(itemType.rawValue)
-                    .font(.system(size: 20))
-                    .fontWeight(.bold)
-                
-                
+                ZStack {
+                 
+                    Text(itemType.rawValue)
+                        .font(.system(size: responsiveSize(20, 26)))
+                        .fontWeight(.bold)
+                    
+                    HStack {
+                        Spacer()
+                        
+                        if itemType == .arrow {
+                            TLButton(systemName: nil,
+                                     label: "矢印を回転",
+                                     color: .green,
+                                     verticalPadding: .fixed(nil),
+                                     horizontalPadding: .fixed(nil)) {
+                                arrowDegree = (arrowDegree + 45) % 360
+                            }
+                        }
+                    }
+                    
+                }
+
                 Slider(
                     value: Binding(
                         get: { customItem.size },
@@ -154,18 +180,20 @@ extension ImageEditorView {
                             }
                         }
                     ),
-                    in: 40...120
+                    in: deviceType == .iPhone ? 40...100 : 80...200
                 )
                 
                 Text("（スライダーで大きさを調整）")
-                    .font(.system(size: 16))
+                    .font(.system(size: responsiveSize(16, 20)))
                     .fontWeight(.medium)
+                
             }
             .padding(10)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color(red: 0.7, green: 0.7, blue: 0.7, opacity: 1), lineWidth: 0.5)
             )
+            .padding(.horizontal, responsiveSize(10, 30))
             
             Spacer()
         }

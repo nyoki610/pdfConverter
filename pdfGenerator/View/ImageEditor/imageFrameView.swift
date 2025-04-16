@@ -13,7 +13,7 @@ extension ImageEditorView {
     var imageFrameView: some View {
         ImageFrame {
             if let customImage = content.customImage {
-                Image(uiImage: customImage.resizedToFit(maxWidth: 300, maxHeight: 200))
+                Image(uiImage: customImage.resizedToFit(CGSize: deviceType.photoSize))
             } else {
                 dragView(isScreenShot: false)
             }
@@ -24,8 +24,8 @@ extension ImageEditorView {
     func dragView(isScreenShot: Bool) -> some View {
      
         ZStack {
-            Image(uiImage: content.image.resizedToFit(maxWidth: frameSize.width,
-                                                      maxHeight: frameSize.height))
+            Image(uiImage: content.image.resizedToFit(maxWidth: deviceType.photoSize.width,
+                                                      maxHeight: deviceType.photoSize.height))
             
             if let customCircle = customCircle {
                 customItemView(customItem: customCircle,
@@ -40,8 +40,8 @@ extension ImageEditorView {
                         .onEnded { value in
                             let limited = limitOffset(customItem: customCircle,
                                                       proposedOffset: value.translation)
-                            self.customCircle?.positionRate.width += limited.width / frameSize.width
-                            self.customCircle?.positionRate.height += limited.height / frameSize.height
+                            self.customCircle?.positionRate.width += limited.width / deviceType.photoSize.width
+                            self.customCircle?.positionRate.height += limited.height / deviceType.photoSize.height
                         }
                 )
             }
@@ -58,13 +58,13 @@ extension ImageEditorView {
                         .onEnded { value in
                             let limited = limitOffset(customItem: customArrow,
                                                       proposedOffset: value.translation)
-                            self.customArrow?.positionRate.width += limited.width / frameSize.width
-                            self.customArrow?.positionRate.height += limited.height / frameSize.height
+                            self.customArrow?.positionRate.width += limited.width / deviceType.photoSize.width
+                            self.customArrow?.positionRate.height += limited.height / deviceType.photoSize.height
                         }
                 )
             }
         }
-        .frame(width: 300, height: 200)
+        .frame(width: deviceType.photoSize.width, height: deviceType.photoSize.height)
         .background(.white)
     }
     
@@ -79,13 +79,19 @@ extension ImageEditorView {
         }()
         
         VStack {
-            customItem
+            switch itemType {
+            case .circle:
+                customItem
+            case .arrow:
+                customItem
+                    .rotationEffect(Angle(degrees: CGFloat(arrowDegree)), anchor: .center)
+            }
         }
         .padding(10) /// タップ領域を広げる
         .contentShape(Rectangle()) /// タップ可能範囲をRectangleに合わせる
         .offset(
-            x: customItem.positionRate.width * frameSize.width + dragOffset.width,
-            y: customItem.positionRate.height * frameSize.height + dragOffset.height
+            x: customItem.positionRate.width * deviceType.photoSize.width + dragOffset.width,
+            y: customItem.positionRate.height * deviceType.photoSize.height + dragOffset.height
         )
     }
     
@@ -93,16 +99,16 @@ extension ImageEditorView {
         
         guard let customItem = customItem else { return .zero }
         
-        let currentX = customItem.positionRate.width * frameSize.width + proposedOffset.width
-        let currentY = customItem.positionRate.height * frameSize.height + proposedOffset.height
+        let currentX = customItem.positionRate.width * deviceType.photoSize.width + proposedOffset.width
+        let currentY = customItem.positionRate.height * deviceType.photoSize.height + proposedOffset.height
 
-        let halfWidth = frameSize.width / 2
-        let halfHeight = frameSize.height / 2
+        let halfWidth = deviceType.photoSize.width / 2
+        let halfHeight = deviceType.photoSize.height / 2
         let limitX = halfWidth - customItem.size / 2
         let limitY = halfHeight - customItem.size / 2
 
-        let clampedX = min(max(currentX, -limitX), limitX) - customItem.positionRate.width * frameSize.width
-        let clampedY = min(max(currentY, -limitY), limitY) - customItem.positionRate.height * frameSize.height
+        let clampedX = min(max(currentX, -limitX), limitX) - customItem.positionRate.width * deviceType.photoSize.width
+        let clampedY = min(max(currentY, -limitY), limitY) - customItem.positionRate.height * deviceType.photoSize.height
 
         return CGSize(width: clampedX, height: clampedY)
     }

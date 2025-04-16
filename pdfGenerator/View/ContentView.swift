@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView: ResponsiveView {
+    
+    @Environment(\.deviceType) var deviceType
     
     @EnvironmentObject private var realmService: RealmService
     @EnvironmentObject private var alertSharedData: AlertSharedData
@@ -47,9 +49,6 @@ struct ContentView: View {
             }
         }
     }
-    
-    private let frameWidth: CGFloat = 300
-    private let frameHeight: CGFloat = 200
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,10 +59,10 @@ struct ContentView: View {
                     VStack {
                         Text(String(index+1))
                             .fontWeight(.bold)
-                            .font(.system(size: 18))
+                            .font(.system(size: responsiveSize(18, 24)))
                     }
                     .padding(.vertical, 4)
-                    .frame(width: 48)
+                    .frame(width: responsiveSize(48, 60))
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
@@ -92,27 +91,20 @@ struct ContentView: View {
             
             if !content.id.isEmpty {
                 ImageFrame {
-                    Image(uiImage: content.pdfImage.resizedToFit(maxWidth: 300, maxHeight: 200))
+                    Image(uiImage: content.pdfImage.resizedToFit(CGSize: deviceType.photoSize))
                 }
                 .padding(.bottom, 10)
             }
 
             HStack {
                 Spacer()
-                Button {
+                TLButton(systemName: "plus.circle",
+                         label: "画像に図形を挿入",
+                         color: .blue,
+                         verticalPadding: .fixed(nil),
+                         horizontalPadding: .fixed(nil)) {
                     selectedContentId = content.id
                     showImageEditorView = true
-                } label: {
-                    HStack {
-                        Image(systemName: "plus.circle")
-                        Text("画像に図形を挿入")
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .background(.blue)
-                    .cornerRadius(8)
                 }
             }
             .padding(.bottom, 10)
@@ -155,6 +147,7 @@ struct ContentView: View {
         VStack {
             HStack {
                 Text(targetType.rawValue)
+                    .fontWeight(.semibold)
                 Spacer()
             }
 
@@ -167,19 +160,13 @@ struct ContentView: View {
             
             HStack {
                 Spacer()
-                Button {
+                
+                TLButton(systemName: "plus.circle.fill",
+                         label: "過去の入力内容をコピー",
+                         color: .blue,
+                         verticalPadding: .fixed(nil),
+                         horizontalPadding: .fixed(nil)) {
                     selectedTargetType = targetType
-                } label: {
-                    HStack {
-                        Image(systemName: "plus.circle.fill")
-                        Text("過去の入力内容をコピー")
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .background(.blue)
-                    .cornerRadius(8)
                 }
             }
             .padding(.bottom, 16)

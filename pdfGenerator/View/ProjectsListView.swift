@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ProjectsListView: View {
+struct ProjectsListView: ResponsiveView {
+    
+    @Environment(\.deviceType) var deviceType
     
     @EnvironmentObject var realmService: RealmService
     @EnvironmentObject var sharedData: SharedData
@@ -43,16 +45,19 @@ struct ProjectsListView: View {
                         Spacer()
                         TLButton(systemName: "plus.circle.fill",
                                  label: "新規プロジェクトを作成",
-                                 color: .green) {
+                                 color: .green,
+                                 verticalPadding: .fixed(nil),
+                                 horizontalPadding: .infinity) {
                             customAlertHandler.controllCustomAlert(
                                 alertTitle: "新規プロジェクトを作成",
-                                label: "プロジェクト名を入力",
+                                label: "タイトルを入力",
                                 action: createNewProject)
                         }
-                        .padding(.horizontal, 20)
                         Spacer()
                     }
-                    .padding(.vertical, 10)
+                    .padding(.top, 10)
+                    .padding(.bottom, 40)
+                    .padding(.horizontal, 20)
                     .background(.clear)
                 }
                 
@@ -61,7 +66,7 @@ struct ProjectsListView: View {
                         Text("プロジェクトがありません")
                         Text("新規作成してください")
                     }
-                    .font(.system(size: 20))
+                    .font(.system(size: responsiveSize(20, 24)))
                     .fontWeight(.bold)
                     .foregroundColor(.gray)
                 }
@@ -79,19 +84,15 @@ struct ProjectsListView: View {
         
         VStack(alignment: .leading) {
             
-            Text(project.title)
-                .fontWeight(.bold)
-                .padding(.bottom, 4)
-
-            Text("作成日 \(project.createdDate.formattedString())")
-            Text("最終更新日 \(project.lastUsedDate.formattedString())")
-            Text("要素数 \(project.contents.count)")
-            
             HStack {
-                TLButton(systemName: "pencil.line",
-                         label: "プロジェクト名を変更",
-                         color: .blue,
-                         size: 14) {
+                Text(project.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom, 4)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .padding(.trailing)
+                
+                Button {
                     customAlertHandler.controllCustomAlert(
                         alertTitle: "プロジェクト名を変更",
                         label: "プロジェクト名を入力",
@@ -99,8 +100,25 @@ struct ProjectsListView: View {
                             project.updateSelf(realm: realmService.realm,
                                                title: customAlertHandler.userInput)
                         })
+                } label: {
+                    VStack {
+                        HStack {
+                            Image(systemName: "pencil.line")
+                                .padding(.trailing, 4)
+                            Text("タイトルを変更")
+                        }
+                        .foregroundColor(.blue)
+                    }
                 }
-                         .padding(.trailing, 40)
+                .fontWeight(.bold)
+            }
+            .padding(.top, 10)
+
+            Text("作成日 : \(project.createdDate.toFormattedString())")
+            Text("最終更新日 : \(project.lastUsedDate.toFormattedString())")
+
+            HStack {
+                Text("登録した写真 : \(project.contents.count)枚")
                 
                 Spacer()
                 

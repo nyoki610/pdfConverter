@@ -19,10 +19,9 @@ protocol CustomItem: View {
 
 
 struct CustomCircle: CustomItem {
-    
 
     var positionRate: CGSize = CGSize(width: 0.0, height: 0.0)
-    var size: CGFloat = 80
+    var size: CGFloat = DeviceType.model == .iPhone ? 50 : 100
     
     private let circleWidth: CGFloat = 4
     
@@ -36,7 +35,7 @@ struct CustomCircle: CustomItem {
 struct CustomArrow: CustomItem {
     
     var positionRate: CGSize = CGSize(width: 0.0, height: 0.0)
-    var size: CGFloat = 80
+    var size: CGFloat = DeviceType.model == .iPhone ? 50 : 100
     
     var body: some View {
         Image(systemName: "line.diagonal.arrow")

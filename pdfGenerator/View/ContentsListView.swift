@@ -2,7 +2,9 @@ import PhotosUI
 import SwiftUI
 
 
-struct ContentsListView: View {
+struct ContentsListView: ResponsiveView {
+    
+    @Environment(\.deviceType) var deviceType
     
     @StateObject private var photoHandler = PhotoHandler()
     @EnvironmentObject private var sharedData: SharedData
@@ -94,15 +96,14 @@ struct ContentsListView: View {
                     .padding(.vertical, 20)
                     .background(.white)
                 }
-                
             }
 
-            if realmService.selectedProject.contents.isEmpty {
+            if realmService.selectedProject.contents.isEmpty && realmService.selectedProject.coverPage == nil {
                 VStack {
                     Text("写真が登録されていません")
                     Text("写真を追加してください")
                 }
-                .font(.system(size: 20))
+                .font(.system(size: responsiveSize(20, 24)))
                 .fontWeight(.bold)
                 .foregroundColor(.gray)
             }
@@ -134,10 +135,10 @@ struct ContentsListView: View {
                     VStack {
                         Text("表紙")
                             .fontWeight(.bold)
-                            .font(.system(size: 18))
+                            .font(.system(size: responsiveSize(18, 24)))
                     }
                     .padding(.vertical, 4)
-                    .frame(width: 48)
+                    .frame(width: responsiveSize(48, 60))
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
@@ -160,19 +161,28 @@ struct ContentsListView: View {
                 .padding(.bottom, 20)
                 
                 ImageFrame {
-                    Image(uiImage: coverPage.resizedToFit(maxWidth: 300, maxHeight: 200))
+                    Image(uiImage: coverPage.resizedToFit(CGSize: deviceType.photoSize))
                 }
                 .padding(.bottom, 10)
                 
-                VStack {
-                    TLButton(systemName: "rectangle.fill.badge.plus",
-                             label: "表紙ページを変更",
-                             color: .blue,
-                             size: 16) {
-                        return
+                PhotosPicker(selection: $photoHandler.selectedCoverPage,
+                             maxSelectionCount: 1,
+                             matching: .images) {
+                    VStack {
+                        TLButton(systemName: "rectangle.fill.badge.plus",
+                                 label: "表紙ページを変更",
+                                 color: .blue,
+                                 verticalPadding: .fixed(nil),
+                                 horizontalPadding: .fixed(nil)) {
+                            
+                        }
+                                 .allowsHitTesting(false)
                     }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
+                             .onChange(of: photoHandler.selectedCoverPage) {
+                                 photoHandler.addCoverPage(project: realmService.selectedProject, realm: realmService.realm)
+                             }
             }
             .padding(.horizontal, 30)
             .padding(.vertical, 20)
@@ -192,9 +202,11 @@ struct ContentsListView: View {
                     Image(systemName: "plus")
                         .bold()
                         .font(.system(size: 24))
+                        .padding(.bottom, 4)
                     Text("表紙ページを追加する")
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, 20)
+                .padding(.horizontal, 40)
                 .background(.white)
                 .cornerRadius(16)
                 .overlay(
@@ -206,7 +218,6 @@ struct ContentsListView: View {
                 .padding(.horizontal, 30)
             }
                          .onChange(of: photoHandler.selectedCoverPage) {
-                             print(1)
                              photoHandler.addCoverPage(project: realmService.selectedProject, realm: realmService.realm)
                          }
         }
@@ -219,13 +230,13 @@ struct ContentsListView: View {
             Image(systemName: systemName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 30, height: 30)
+                .frame(width: responsiveSize(30, 52), height: responsiveSize(30, 52))
                 .padding(10)
                 .background(.green.opacity(0.1))
                 .clipShape(Circle())
             
             Text(label)
-                .font(.caption)
+                .font(.system(size: responsiveSize(18, 22)))
         }
         .foregroundColor(.green)
         .fontWeight(.bold)

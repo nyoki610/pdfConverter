@@ -13,6 +13,7 @@ struct pdfConverterApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
+                .environment(\.deviceType, DeviceType.model)
         }
     }
 }

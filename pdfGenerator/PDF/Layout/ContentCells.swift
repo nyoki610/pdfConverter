@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ContentCell {
+struct ContentCells {
 
     let content: Cell
     let image: Cell
@@ -18,12 +18,12 @@ struct ContentCell {
     init(contentIndex: Int) {
         
         let verticalOffset = PageLayout.contentsHeight * CGFloat(contentIndex % 3)
-        let startY = PageLayout.verticalMargin + verticalOffset
+        let startY = PageLayout.contentsStartY + verticalOffset
         
         content = Cell(
             startX: PageLayout.leftBorder,
             startY: startY,
-            width: PageLayout.contentsWidth,
+            width: PageLayout.overallWidth,
             height: PageLayout.contentsHeight
         )
         
@@ -55,8 +55,4 @@ struct ContentCell {
             height: PageLayout.detailCellHeight
         )
     }
-}
-
-struct ContentCell {
-    
 }

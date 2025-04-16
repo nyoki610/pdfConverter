@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct MainView: ResponsiveView {
+    
+    @Environment(\.deviceType) var deviceType: DeviceType
+    
     @ObservedObject private var realmService = RealmService()
     @ObservedObject private var sharedData = SharedData()
     @ObservedObject private var alertSharedData = AlertSharedData()
@@ -42,6 +45,7 @@ struct MainView: View {
                 }
             }
         }
+        .font(.system(size: responsiveSize(16, 24)))
         .environmentObject(alertSharedData)
         .ignoresSafeArea(.keyboard)
         .alert(item: $alertSharedData.alertType) { _ in

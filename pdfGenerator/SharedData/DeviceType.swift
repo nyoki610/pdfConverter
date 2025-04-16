@@ -1,3 +1,11 @@
+//
+//  DeviceType.swift
+//  pdfConverter
+//
+//  Created by 二木裕也 on 2025/04/13.
+//
+
+
 import SwiftUI
 
 
@@ -20,6 +28,14 @@ enum DeviceType {
         case .iPhone: return "iPhone"
         case .iPad: return "iPad"
         default: return "unknown"
+        }
+    }
+    
+    var photoSize: CGSize {
+        switch self {
+        case .iPhone: return CGSize(width: 300, height: 200)
+        case .iPad: return CGSize(width: 600, height: 400)
+        default: return CGSize(width: 300, height: 200)
         }
     }
 }

@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ImageEditorView: View {
+struct ImageEditorView: ResponsiveView {
+    
+    @Environment(\.deviceType) var deviceType
     
     @EnvironmentObject var realmService: RealmService
     
@@ -25,7 +27,7 @@ struct ImageEditorView: View {
     @GestureState var circleOffset: CGSize = .zero
     @GestureState var arrowOffset: CGSize = .zero
     
-    let frameSize = CGSize(width: 300, height: 200)
+    @State var arrowDegree: Int = 0
     
     init(contentId: String, showImageEditorView: Binding<Bool>) {
         print("ImageEditorView has been initialized!")
@@ -44,15 +46,15 @@ struct ImageEditorView: View {
             
             Text("画像に図形を挿入する")
                 .fontWeight(.bold)
-                .font(.system(size: 20))
-                .padding(.top, 20)
+                .font(.system(size: responsiveSize(18, 24)))
+                .padding(.top, 40)
             
             imageFrameView
             
             if customCircle != nil || customArrow != nil {
                 Text("（ドラッグして図形を移動）")
+                    .font(.system(size: responsiveSize(16, 20)))
                     .padding(.top, 10)
-                    .font(.system(size: 16))
                     .fontWeight(.medium)
             }
             
@@ -60,7 +62,6 @@ struct ImageEditorView: View {
 
             buttonView
         }
-        .padding()
         .background(.white)
         .cornerRadius(8)
         .padding(.horizontal, 20)

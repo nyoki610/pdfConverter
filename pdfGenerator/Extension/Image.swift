@@ -37,6 +37,10 @@ extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
     }
     
+    func resizedToFit(CGSize: CGSize) -> UIImage {
+        return resizedToFit(maxWidth: CGSize.width, maxHeight: CGSize.height)
+    }
+    
     @ViewBuilder
     private func resizedImageView(frame: CGSize) -> some View {
         ZStack {
