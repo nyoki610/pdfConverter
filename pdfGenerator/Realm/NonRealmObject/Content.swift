@@ -100,3 +100,9 @@ extension Content {
         }
     }
 }
+
+
+extension Content {
+    
+    static let empty: Content = Content(id: "", image: UIImage(), issue: "", repairContent: "", customImage: UIImage())
+}

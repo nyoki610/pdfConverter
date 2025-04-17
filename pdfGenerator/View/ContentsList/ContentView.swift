@@ -16,7 +16,7 @@ struct ContentView: ResponsiveView {
     
     private let contentId: String
     private var content: Content {
-        realmService.selectedProject.contents.first(where: {$0.id==contentId}) ?? EmptyModel.content
+        realmService.selectedProject.contents.first(where: {$0.id==contentId}) ?? Content.empty
     }
     private var index: Int? {
         realmService.selectedProject.contents.firstIndex(where: {$0.id==contentId})

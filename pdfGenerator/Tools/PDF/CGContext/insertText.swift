@@ -31,9 +31,6 @@ extension CGContext {
         let boundingRect = getBoundingRect(attributedText, paddingRect)
         /// 最終的に使用する領域を取得
         let finalRect = getFinalRect(paddingRect, boundingRect, verticalAlignment)
-        
-        print(paddingRect)
-        print(boundingRect)
 
         /// attributedText を出力
         attributedText.draw(

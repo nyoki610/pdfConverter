@@ -15,7 +15,7 @@ struct ImageEditorView: ResponsiveView {
     
     private let contentId: String
     var content: Content {
-        realmService.selectedProject.contents.first {$0.id == contentId} ?? EmptyModel.content
+        realmService.selectedProject.contents.first {$0.id == contentId} ?? Content.empty
     }
     
     /// ImageEditorView が開かれるたびに初期化
