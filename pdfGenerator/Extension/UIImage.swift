@@ -1,6 +1,6 @@
 //
 //  UIImage.swift
-//  pdfConverter
+//  pdfGenerator
 //
 //  Created by 二木裕也 on 2025/03/12.
 //

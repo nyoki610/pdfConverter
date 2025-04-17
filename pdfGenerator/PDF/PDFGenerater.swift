@@ -1,6 +1,6 @@
 //
 //  PDFGenerater.swift
-//  pdfConverter
+//  pdfGenerator
 //
 //  Created by 二木裕也 on 2025/03/12.
 //
@@ -23,7 +23,7 @@ class PDFGenerator {
             return
         }
         
-        // 常に同じファイル名で上書き保存
+        /// 常に同じファイル名で上書き保存
         do {
             try data.write(to: tempURL, options: .atomic)
             completion(true)
@@ -49,14 +49,16 @@ class PDFGenerator {
                                                width: PageLayout.A4_WIDTH,
                                                height: PageLayout.A4_HEIGHT)
                 
-                context.cgContext.insertImage(image: coverPage,
-                                              cell: coverPageCell,
-                                              padding: 20)
+                context.cgContext.insertImage(
+                    image: coverPage,
+                    cell: coverPageCell,
+                    padding: 4
+                )
             }
             
-            // ページごとの処理
+            /// ページごとの処理
             for (index, content) in project.contents.enumerated() {
-                // 新しいページを開始
+                /// 新しいページを開始
                 if index % 3 == 0 {
                     context.beginPage()
                     
@@ -65,11 +67,13 @@ class PDFGenerator {
                                                     width: PageLayout.overallWidth,
                                                     height: PageLayout.pageNumberHeight)
                     
-                    context.cgContext.insertText(text: "Page \(index/3+1)",
-                                                 cell: pageNumberCell,
-                                                 verticalAlignment: .center,
-                                                 horizontalAlignment: .leading,
-                                                 padding: 10)
+                    context.cgContext.insertText(
+                        text: "Page \(index/3+1)",
+                        cell: pageNumberCell,
+                        verticalAlignment: .center,
+                        horizontalAlignment: .trailing,
+                        horizontalPadding: 10
+                    )
                     
                     let projectTitleCell: Cell = Cell(startX: PageLayout.leftBorder,
                                                       startY: PageLayout.projectTitleStartY,
@@ -78,11 +82,13 @@ class PDFGenerator {
                     
                     context.cgContext.insertStroke(cell: projectTitleCell)
                     
-                    context.cgContext.insertText(text: project.title,
-                                                 cell: projectTitleCell,
-                                                 verticalAlignment: .center,
-                                                 horizontalAlignment: .leading,
-                                                 padding: 10)
+                    context.cgContext.insertText(
+                        text: project.title,
+                        cell: projectTitleCell,
+                        verticalAlignment: .center,
+                        horizontalAlignment: .leading,
+                        horizontalPadding: 10
+                    )
                 }
                 
                 let contentCells = ContentCells(contentIndex: index)
@@ -111,14 +117,15 @@ class PDFGenerator {
                     cell: contentCells.title,
                     verticalAlignment: .center,
                     horizontalAlignment: .leading,
-                    padding: 10
+                    horizontalPadding: 10
                 )
                 context.cgContext.insertText(
                     text: content.repairContent,
                     cell: contentCells.detail,
-                    verticalAlignment: .leading,
+                    verticalAlignment: .top,
                     horizontalAlignment: .leading,
-                    padding: 10
+                    verticalPadding: 10,
+                    horizontalPadding: 10
                 )
             }
         }

@@ -1,6 +1,6 @@
 //
 //  PageLayout.swift
-//  pdfConverter
+//  pdfGenerator
 //
 //  Created by 二木裕也 on 2025/03/12.
 //
@@ -20,7 +20,7 @@ enum PageLayout {
     static let overallWidth: CGFloat = rightBorder - leftBorder
     
     /// ページ番号の縦幅を設定
-    static let pageNumberStartX: CGFloat = rightBorder - 72
+    static let pageNumberStartX: CGFloat = horizontalMargin
     static let pageNumberStartY: CGFloat = verticalMargin
     static let pageNumberHeight: CGFloat = 20
     static let pageNumberPaddingBottom: CGFloat = 10
@@ -35,8 +35,8 @@ enum PageLayout {
     static let imageCellWidth: CGFloat = 296
     static let imageCellHeight: CGFloat = contentsHeight
     
-    static let indexCellWidth: CGFloat = 30
-    static let indexCellHeight: CGFloat = 30
+    static let indexCellWidth: CGFloat = 36
+    static let indexCellHeight: CGFloat = 36
     
     static let titleCellWidth: CGFloat = overallWidth - (imageCellWidth + indexCellWidth)
     static let titleCellHeight: CGFloat = indexCellHeight

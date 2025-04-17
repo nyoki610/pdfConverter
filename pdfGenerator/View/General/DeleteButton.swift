@@ -1,6 +1,6 @@
 //
 //  DeleteButton.swift
-//  pdfConverter
+//  pdfGenerator
 //
 //  Created by 二木裕也 on 2025/04/11.
 //

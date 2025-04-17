@@ -1,6 +1,6 @@
 //
 //  buttonView.swift
-//  pdfConverter
+//  pdfGenerator
 //
 //  Created by 二木裕也 on 2025/04/08.
 //
@@ -131,8 +131,11 @@ extension ImageEditorView {
             
             Button {
                 switch itemType {
-                case .circle: customCircle = nil
-                case .arrow: customArrow = nil
+                case .circle:
+                    customCircle = nil
+                case .arrow:
+                    customArrow = nil
+                    arrowDegree = 0
                 }
             } label: {
                 VStack {
@@ -158,12 +161,14 @@ extension ImageEditorView {
                         Spacer()
                         
                         if itemType == .arrow {
-                            TLButton(systemName: nil,
-                                     label: "矢印を回転",
-                                     color: .green,
-                                     verticalPadding: .fixed(nil),
-                                     horizontalPadding: .fixed(nil)) {
+                            Button {
                                 arrowDegree = (arrowDegree + 45) % 360
+                            } label: {
+                                HStack {
+                                    Image(systemName: "arrow.clockwise")
+                                    Text("回転")
+                                }
+                                .bold()
                             }
                         }
                     }
