@@ -30,6 +30,7 @@ struct ContentsListView: ResponsiveView {
                                         selectedContentId: $selectedContentId,
                                         showImageEditorView: $showImageEditorView)
                                 .padding(.top, 10)
+                                .padding(.horizontal, 40)
                                 .id(content.id)
                         }
                         /// 十分下までスクロールできるように透明のアイテムを追加
@@ -82,7 +83,8 @@ struct ContentsListView: ResponsiveView {
                                         sharedData.path.append(.pdfViewer)
                                     } else {
                                         alertSharedData.showSingleAlert(title: "エラー",
-                                                                        message: "PDFの生成に失敗しました", closeAction: {})
+                                                                        message: "PDFの生成に失敗しました",
+                                                                        closeAction: {})
                                     }
                                 }
                             } label: {

@@ -113,14 +113,14 @@ class PDFGenerator {
                     horizontalAlignment: .center
                 )
                 context.cgContext.insertText(
-                    text: content.issue,
+                    text: content.title,
                     cell: contentCells.title,
                     verticalAlignment: .center,
                     horizontalAlignment: .leading,
                     horizontalPadding: 10
                 )
                 context.cgContext.insertText(
-                    text: content.repairContent,
+                    text: content.detail,
                     cell: contentCells.detail,
                     verticalAlignment: .top,
                     horizontalAlignment: .leading,

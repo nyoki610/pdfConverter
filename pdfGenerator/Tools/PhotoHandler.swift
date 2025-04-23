@@ -8,12 +8,11 @@ class PhotoHandler: ObservableObject {
     @Published var selectedCoverPage: [PhotosPickerItem] = []
     
     func addContents(project: Project, realm: Realm?, completion: @escaping () -> Void) {
-        // 非同期で画像を読み込む
-        let group = DispatchGroup() // 複数の非同期処理を同期的に待機
-        var newContents: [Content] = []
+        let group = DispatchGroup()
+        var newContents: [Content?] = Array(repeating: nil, count: selectedItems.count)
 
-        for item in selectedItems {
-            group.enter() // 処理開始
+        for (index, item) in selectedItems.enumerated() {
+            group.enter()
             
             item.loadTransferable(type: Data.self) { result in
                 DispatchQueue.main.async {
@@ -21,27 +20,27 @@ class PhotoHandler: ObservableObject {
                     case .success(let image?):
                         let newContent = Content(id: UUID().uuidString,
                                                  image: image.toUIImage(),
-                                                 issue: "",
-                                                 repairContent: "",
+                                                 title: "",
+                                                 detail: "",
                                                  customImage: nil)
-                        newContents.append(newContent)
+                        /// index を指定して更新 -> 元の順序を保つ
+                        newContents[index] = newContent
                     case .failure(let error):
                         print("Error loading image: \(error)")
                     default:
                         break
                     }
-                    group.leave() // 処理完了
+                    group.leave()
                 }
             }
         }
-        
-        // すべての画像の読み込みが完了したらselectedImagesを更新
+
         group.notify(queue: .main) {
-            project.updateSelf(realm: realm, add: newContents)
+            /// nil を除外
+            let filteredContents = newContents.compactMap { $0 }
+            project.updateSelf(realm: realm, add: filteredContents)
             self.selectedItems = []
-            
-            // 完了通知
-            completion() // ここで外部に完了を通知
+            completion()
         }
     }
     

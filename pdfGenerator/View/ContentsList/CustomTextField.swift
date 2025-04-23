@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CustomTextField: View {
+    
     @EnvironmentObject private var realmService: RealmService
     @Binding var userInput: String
     let content: Content
@@ -31,8 +32,8 @@ struct CustomTextField: View {
                 if !newValue {
                     content.updateSelf(
                         realm: realmService.realm,
-                        issue: (targetType == .issue) ? userInput : nil,
-                        repairContent: (targetType == .repairContent) ? userInput : nil
+                        title: (targetType == .title) ? userInput : nil,
+                        detail: (targetType == .detail) ? userInput : nil
                     )
                 }
             }

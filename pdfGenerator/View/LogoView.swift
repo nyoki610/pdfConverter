@@ -1,18 +1,26 @@
-//
-//  LogoView.swift
-//  pdfGenerator
-//
-//  Created by 二木裕也 on 2025/04/19.
-//
-
 import SwiftUI
 
-struct LogoView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+extension MainView {
+    
+    /// アプリ起動時に表示されるタイトル画面
+    var logoView: some View {
+        
+        VStack {
+                
+            Spacer()
+            
+            Image("buildings")
+                .resizable()
+                .frame(width: 240, height: 240)
+                .padding(.bottom, 40)
+            Text("現場レポ")
+                .font(.system(size: responsiveScaled(48, 1.5)))
+            
+            Spacer()
+        }
+        .foregroundColor(.white)
+        .fontWeight(.bold)
+        .frame(maxWidth: .infinity)
+        .background(.blue)
     }
-}
-
-#Preview {
-    LogoView()
 }

@@ -6,26 +6,26 @@ import UIKit
 struct Content: Identifiable {
     let id: String
     let image: UIImage
-    var issue: String
-    var repairContent: String
+    var title: String
+    var detail: String
     
     var customImage: UIImage?
     
     var pdfImage: UIImage { customImage ?? image }
     
-    init(id: String, image: UIImage, issue: String, repairContent: String, customImage: UIImage?) {
+    init(id: String, image: UIImage, title: String, detail: String, customImage: UIImage?) {
         self.id = id
         self.image = image
-        self.issue = issue
-        self.repairContent = repairContent
+        self.title = title
+        self.detail = detail
         self.customImage = customImage
     }
     
     func convertToRealm() -> RealmContent {
         let realmContent = RealmContent()
         realmContent.image = image.toJPEGData()
-        realmContent.issue = issue
-        realmContent.repairContent = repairContent
+        realmContent.title = title
+        realmContent.detail = detail
         realmContent.customImage = customImage?.toJPEGData()
         
         return realmContent
@@ -37,8 +37,8 @@ extension Content {
     func updateSelf(
         realm: Realm?,
         image: UIImage? = nil,
-        issue: String? = nil,
-        repairContent: String? = nil
+        title: String? = nil,
+        detail: String? = nil
     ) {
         guard let realm = realm else {
             print("Error: Realm instance not found.")
@@ -57,14 +57,14 @@ extension Content {
 
         do {
             try realm.write {
-                if let issue = issue {
-                    content.issue = issue
+                if let title = title {
+                    content.title = title
                 }
                 if let image = image {
                     content.image = image.toJPEGData()
                 }
-                if let repairContent = repairContent {
-                    content.repairContent = repairContent
+                if let detail = detail {
+                    content.detail = detail
                 }
             }
             print("Log: Content updated successfully.")
@@ -104,5 +104,5 @@ extension Content {
 
 extension Content {
     
-    static let empty: Content = Content(id: "", image: UIImage(), issue: "", repairContent: "", customImage: UIImage())
+    static let empty: Content = Content(id: "", image: UIImage(), title: "", detail: "", customImage: UIImage())
 }

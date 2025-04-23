@@ -39,13 +39,13 @@ struct ContentView: ResponsiveView {
     }
     
     enum TargetType: String {
-        case issue = "問題点"
-        case repairContent = "修繕内容"
+        case title = "タイトル"
+        case detail = "詳細"
         
         func options(realmService: RealmService) -> [Option] {
             switch self {
-            case .issue: return realmService.titleOptions
-            case .repairContent: return realmService.detailOptions
+            case .title: return realmService.titleOptions
+            case .detail: return realmService.detailOptions
             }
         }
     }
@@ -109,8 +109,8 @@ struct ContentView: ResponsiveView {
             }
             .padding(.bottom, 10)
             
-            userInputView(content: content, targetType: .issue)
-            userInputView(content: content, targetType: .repairContent)
+            userInputView(content: content, targetType: .title)
+            userInputView(content: content, targetType: .detail)
         }
         .padding(.horizontal, 30)
         .padding(.vertical, 20)
@@ -134,8 +134,8 @@ struct ContentView: ResponsiveView {
             }
         }
         .onAppear {
-            self.userInputTitle = content.issue
-            self.userInputDetail = content.repairContent
+            self.userInputTitle = content.title
+            self.userInputDetail = content.detail
         }
     }
     
@@ -152,7 +152,7 @@ struct ContentView: ResponsiveView {
             }
 
             CustomTextField(
-                userInput: (targetType == .issue) ? $userInputTitle : $userInputDetail,
+                userInput: (targetType == .title) ? $userInputTitle : $userInputDetail,
                 content: content,
                 targetType: targetType
             )
@@ -192,12 +192,12 @@ extension ContentView {
                     Button {
                         content.updateSelf(
                             realm: realmService.realm,
-                            issue: selectedTargetType == .issue ? option.label : nil,
-                            repairContent: selectedTargetType == .repairContent ? option.label : nil
+                            title: selectedTargetType == .title ? option.label : nil,
+                            detail: selectedTargetType == .detail ? option.label : nil
                         )
                         switch selectedTargetType {
-                        case .issue: userInputTitle = option.label
-                        case .repairContent: userInputDetail = option.label
+                        case .title: userInputTitle = option.label
+                        case .detail: userInputDetail = option.label
                         default: break
                         }
                         selectedTargetType = nil
