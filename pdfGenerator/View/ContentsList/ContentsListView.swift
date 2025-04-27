@@ -6,10 +6,10 @@ struct ContentsListView: ResponsiveView {
     
     @Environment(\.deviceType) var deviceType
     
-    @StateObject private var photoHandler = PhotoHandler()
-    @EnvironmentObject private var sharedData: SharedData
-    @EnvironmentObject private var realmService: RealmService
-    @EnvironmentObject private var alertSharedData: AlertSharedData
+    @StateObject var photoHandler = PhotoHandler()
+    @EnvironmentObject var sharedData: SharedData
+    @EnvironmentObject var realmService: RealmService
+    @EnvironmentObject var alertSharedData: AlertSharedData
     
     @State private var showShuffleSheet: Bool = false
     @State private var selectedContentId: String = ""
@@ -56,37 +56,14 @@ struct ContentsListView: ResponsiveView {
                             bottomButtonLabel(label: "写真を追加", systemName: "rectangle.stack.fill.badge.plus")
                         }
                         .onChange(of: photoHandler.selectedItems) {
-                            
-                            guard !photoHandler.selectedItems.isEmpty else { return }
-                            
-                            let scrollTargetIndex = realmService.selectedProject.contents.count
-
-                            photoHandler.addContents(
-                                project: realmService.selectedProject,
-                                realm: realmService.realm
-                            ) {
-                                if scrollTargetIndex < realmService.selectedProject.contents.count {
-                                    let scrollTargetId = realmService.selectedProject.contents[scrollTargetIndex].id
-                                    withAnimation {
-                                        proxy.scrollTo(scrollTargetId, anchor: .center)
-                                    }
-                                }
-                            }
+                            photosButtonAction()
                         }
                         
                         Spacer()
 
                         if !realmService.selectedProject.contents.isEmpty {
                             Button {
-                                PDFGenerator.savePDF(from: realmService.selectedProject) { success in
-                                    if success {
-                                        sharedData.path.append(.pdfViewer)
-                                    } else {
-                                        alertSharedData.showSingleAlert(title: "エラー",
-                                                                        message: "PDFの生成に失敗しました",
-                                                                        closeAction: {})
-                                    }
-                                }
+                                pdfButtonAction()
                             } label: {
                                 bottomButtonLabel(label: "PDFを出力", systemName: "doc.fill")
                             }
@@ -122,106 +99,6 @@ struct ContentsListView: ResponsiveView {
         .background(Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 0.3))
         .sheet(isPresented: $showShuffleSheet) {
             ShuffleView(showShuffleSheet: $showShuffleSheet)
-        }
-    }
-    
-    @ViewBuilder
-    private var coverPageView: some View {
-        
-        if let coverPage = realmService.selectedProject.coverPage {
-            
-            VStack(spacing: 0) {
-                
-                HStack {
-                    
-                    VStack {
-                        Text("表紙")
-                            .fontWeight(.bold)
-                            .font(.system(size: responsiveSize(18, 24)))
-                    }
-                    .padding(.vertical, 4)
-                    .frame(width: responsiveSize(48, 60))
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.black.opacity(0.3), lineWidth: 2)
-                    )
-                    
-                    Spacer()
-                    
-                    DeleteButton {
-                        alertSharedData.showSelectiveAlert(title: "表紙をリセット",
-                                                           message: "この操作は取り消せません",
-                                                           closeAction: {},
-                                                           rightButtonLabel: "リセット",
-                                                           rightButtonType: .destructive,
-                                                           rightButtonAction: {
-                            realmService.selectedProject.resetCoverPage(realm: realmService.realm)
-                        })
-                    }
-                }
-                .padding(.bottom, 20)
-                
-                ImageFrame {
-                    Image(uiImage: coverPage.resizedToFit(CGSize: deviceType.photoSize))
-                }
-                .padding(.bottom, 10)
-                
-                PhotosPicker(selection: $photoHandler.selectedCoverPage,
-                             maxSelectionCount: 1,
-                             matching: .images) {
-                    VStack {
-                        TLButton(systemName: "rectangle.fill.badge.plus",
-                                 label: "表紙ページを変更",
-                                 color: .blue,
-                                 verticalPadding: .fixed(nil),
-                                 horizontalPadding: .fixed(nil)) {
-                            
-                        }
-                                 .allowsHitTesting(false)
-                    }
-                    .padding(.horizontal, 20)
-                }
-                             .onChange(of: photoHandler.selectedCoverPage) {
-                                 photoHandler.addCoverPage(project: realmService.selectedProject, realm: realmService.realm)
-                             }
-            }
-            .padding(.horizontal, 30)
-            .padding(.vertical, 20)
-            .background(.white)
-            .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.black.opacity(0.3), lineWidth: 2)
-            )
-            .padding(10)
-        } else {
-            
-            PhotosPicker(selection: $photoHandler.selectedCoverPage,
-                         maxSelectionCount: 1,
-                         matching: .images) {
-                VStack {
-                    Image(systemName: "plus")
-                        .bold()
-                        .font(.system(size: 24))
-                        .padding(.bottom, 4)
-                    Text("表紙ページを追加する")
-                }
-                .padding(.vertical, 20)
-                .padding(.horizontal, 40)
-                .background(.white)
-                .cornerRadius(16)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.black.opacity(0.3), lineWidth: 2)
-                )
-                .padding(.top, 40)
-                .padding(.bottom, 10)
-                .padding(.horizontal, 30)
-            }
-                         .onChange(of: photoHandler.selectedCoverPage) {
-                             photoHandler.addCoverPage(project: realmService.selectedProject, realm: realmService.realm)
-                         }
         }
     }
     

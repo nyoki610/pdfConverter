@@ -5,10 +5,12 @@
 //  Created by 二木裕也 on 2025/03/12.
 //
 
-import Foundation
+import SwiftUI
 import PDFKit
 
 class PDFGenerator {
+    
+    @Environment(\.deviceType) var deviceType: DeviceType
     
     static var tempURL: URL {
         let tempDirectory = FileManager.default.temporaryDirectory
@@ -16,13 +18,13 @@ class PDFGenerator {
         return tempURL
     }
     
-    static func savePDF(from project: Project, completion: @escaping (Bool) -> Void) {
-        guard let pdfDocument = generatePDF(from: project),
+    static func savePDF(from project: Project, photoSize: CGSize, completion: @escaping (Bool) -> Void) {
+        guard let pdfDocument = generatePDF(from: project, photoSize: photoSize),
               let data = pdfDocument.dataRepresentation() else {
             completion(false)
             return
         }
-        
+
         /// 常に同じファイル名で上書き保存
         do {
             try data.write(to: tempURL, options: .atomic)
@@ -33,7 +35,7 @@ class PDFGenerator {
         }
     }
     
-    static func generatePDF(from project: Project) -> PDFDocument? {
+    static func generatePDF(from project: Project, photoSize: CGSize) -> PDFDocument? {
 
         let bounds = CGRect(x: 0, y: 0, width: PageLayout.A4_WIDTH, height: PageLayout.A4_HEIGHT)
         let renderer = UIGraphicsPDFRenderer(bounds: bounds)
@@ -41,21 +43,21 @@ class PDFGenerator {
         let data = renderer.pdfData { context in
             
             if let coverPage = project.coverPage {
-                
+
                 context.beginPage()
-                
+
                 let coverPageCell: Cell = Cell(startX: 0,
                                                startY: 0,
                                                width: PageLayout.A4_WIDTH,
                                                height: PageLayout.A4_HEIGHT)
-                
+
                 context.cgContext.insertImage(
                     image: coverPage,
                     cell: coverPageCell,
                     padding: 4
                 )
             }
-            
+
             /// ページごとの処理
             for (index, content) in project.contents.enumerated() {
                 /// 新しいページを開始
@@ -66,9 +68,10 @@ class PDFGenerator {
                                                     startY: PageLayout.pageNumberStartY,
                                                     width: PageLayout.overallWidth,
                                                     height: PageLayout.pageNumberHeight)
-                    
+
                     context.cgContext.insertText(
                         text: "Page \(index/3+1)",
+                        fontSize: 12,
                         cell: pageNumberCell,
                         verticalAlignment: .center,
                         horizontalAlignment: .trailing,
@@ -84,6 +87,7 @@ class PDFGenerator {
                     
                     context.cgContext.insertText(
                         text: project.title,
+                        fontSize: 12,
                         cell: projectTitleCell,
                         verticalAlignment: .center,
                         horizontalAlignment: .leading,
@@ -98,22 +102,27 @@ class PDFGenerator {
                 context.cgContext.insertStroke(cell: contentCells.index)
                 context.cgContext.insertStroke(cell: contentCells.title)
                 context.cgContext.insertStroke(cell: contentCells.detail)
-
+                
                 let imagePadding: CGFloat = 10
+                
+                /// 要修正
+                let image = content.pdfImage
                     
                 context.cgContext.insertImage(
-                    image: content.pdfImage,
+                    image: image,
                     cell: contentCells.image,
                     padding: imagePadding
                 )
                 context.cgContext.insertText(
                     text: String(index+1),
+                    fontSize: 12,
                     cell: contentCells.index,
                     verticalAlignment: .center,
                     horizontalAlignment: .center
                 )
                 context.cgContext.insertText(
                     text: content.title,
+                    fontSize: 12,
                     cell: contentCells.title,
                     verticalAlignment: .center,
                     horizontalAlignment: .leading,
@@ -121,6 +130,7 @@ class PDFGenerator {
                 )
                 context.cgContext.insertText(
                     text: content.detail,
+                    fontSize: 12,
                     cell: contentCells.detail,
                     verticalAlignment: .top,
                     horizontalAlignment: .leading,

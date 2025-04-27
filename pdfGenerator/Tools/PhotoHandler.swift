@@ -3,6 +3,8 @@ import SwiftUI
 import RealmSwift
 
 class PhotoHandler: ObservableObject {
+    
+    @Environment(\.deviceType) var deviceType: DeviceType
 
     @Published var selectedItems: [PhotosPickerItem] = []
     @Published var selectedCoverPage: [PhotosPickerItem] = []
@@ -18,11 +20,17 @@ class PhotoHandler: ObservableObject {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let image?):
+                        
+                        let renderer = ImageRenderer(content: self.copiedDragView(image: image.toUIImage(), photoSize: self.deviceType.photoSize))
+                        renderer.scale = UIScreen.main.scale
+                        
                         let newContent = Content(id: UUID().uuidString,
                                                  image: image.toUIImage(),
                                                  title: "",
                                                  detail: "",
+                                                 processedImage: renderer.uiImage?.cropBottom() ?? image.toUIImage(),
                                                  customImage: nil)
+
                         /// index を指定して更新 -> 元の順序を保つ
                         newContents[index] = newContent
                     case .failure(let error):
@@ -62,5 +70,20 @@ class PhotoHandler: ObservableObject {
         }
         
         selectedCoverPage = []
+    }
+}
+
+
+extension PhotoHandler {
+    
+    @ViewBuilder
+    private func copiedDragView(image: UIImage, photoSize: CGSize) -> some View {
+        
+        ZStack {
+            Image(uiImage: image.resizedToFit(maxWidth: photoSize.width, maxHeight: photoSize.height))
+        }
+        .background(.white)
+        .frame(width: photoSize.width, height: photoSize.height)
+        .background(.white)
     }
 }

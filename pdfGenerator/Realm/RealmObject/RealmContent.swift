@@ -6,6 +6,7 @@ class RealmContent: Object {
     @Persisted var image: Data
     @Persisted var title: String
     @Persisted var detail: String
+    @Persisted var processedImage: Data
     @Persisted var customImage: Data?
 }
 
@@ -16,6 +17,7 @@ extension RealmContent {
                        image: self.image.toUIImage(),
                        title: self.title,
                        detail: self.detail,
+                       processedImage: self.processedImage.toUIImage(),
                        customImage: self.customImage?.toUIImage()
         )
     }

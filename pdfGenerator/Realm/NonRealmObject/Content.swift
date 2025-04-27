@@ -9,15 +9,24 @@ struct Content: Identifiable {
     var title: String
     var detail: String
     
+    var processedImage: UIImage
     var customImage: UIImage?
+
+    var pdfImage: UIImage { customImage ?? processedImage }
     
-    var pdfImage: UIImage { customImage ?? image }
-    
-    init(id: String, image: UIImage, title: String, detail: String, customImage: UIImage?) {
+    init(
+        id: String,
+        image: UIImage,
+        title: String,
+        detail: String,
+        processedImage: UIImage,
+        customImage: UIImage?
+    ) {
         self.id = id
         self.image = image
         self.title = title
         self.detail = detail
+        self.processedImage = processedImage
         self.customImage = customImage
     }
     
@@ -26,11 +35,13 @@ struct Content: Identifiable {
         realmContent.image = image.toJPEGData()
         realmContent.title = title
         realmContent.detail = detail
+        realmContent.processedImage = processedImage.toJPEGData()
         realmContent.customImage = customImage?.toJPEGData()
         
         return realmContent
     }
 }
+
 
 extension Content {
     
@@ -104,5 +115,5 @@ extension Content {
 
 extension Content {
     
-    static let empty: Content = Content(id: "", image: UIImage(), title: "", detail: "", customImage: UIImage())
+    static let empty: Content = Content(id: "", image: UIImage(), title: "", detail: "", processedImage: UIImage(), customImage: UIImage())
 }

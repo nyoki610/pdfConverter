@@ -28,7 +28,7 @@ struct ImageEditorView: ResponsiveView {
     @GestureState var arrowOffset: CGSize = .zero
     
     @State var arrowDegree: Int = 0
-    
+
     init(contentId: String, showImageEditorView: Binding<Bool>) {
         print("ImageEditorView has been initialized!")
         self.contentId = contentId
@@ -50,6 +50,7 @@ struct ImageEditorView: ResponsiveView {
                 .padding(.top, 40)
             
             imageFrameView
+                .padding(.horizontal, 20)
             
             if customCircle != nil || customArrow != nil {
                 Text("（ドラッグして図形を移動）")

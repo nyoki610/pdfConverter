@@ -60,7 +60,7 @@ extension ImageEditorView {
                          label: "閉じる",
                          color: .gray,
                          verticalPadding: .none,
-                         horizontalPadding: .infinity) {
+                         horizontalPadding: .fixed(40)) {
                     showImageEditorView = false
                     /// 念の為初期化
                     /// （ここで初期化しないと次回表示時にボタンのラベルが正しく表示されない）
@@ -74,12 +74,12 @@ extension ImageEditorView {
                          label: "保存して閉じる",
                          color: .blue,
                          verticalPadding: .none,
-                         horizontalPadding: .infinity) {
+                         horizontalPadding: .fixed(40)) {
                     
                     if customCircle != nil || customArrow != nil {
-                        let renderer = ImageRenderer(content: dragView(isScreenShot: true))
+                        let renderer = ImageRenderer(content: dragView)
                         renderer.scale = UIScreen.main.scale
-                        if let customImage = renderer.uiImage {
+                        if let customImage = renderer.uiImage?.cropBottom() {
                             content.updateCustomImage(realm: realmService.realm,
                                                       customImage: customImage)
                         }
@@ -188,7 +188,7 @@ extension ImageEditorView {
                     in: deviceType == .iPhone ? 40...100 : 80...200
                 )
                 
-                Text("（スライダーで大きさを調整）")
+                Text("（大きさを調整）")
                     .font(.system(size: responsiveSize(16, 20)))
                     .fontWeight(.medium)
                 
@@ -202,5 +202,7 @@ extension ImageEditorView {
             
             Spacer()
         }
+        .frame(width: deviceType.photoSize.width)
     }
 }
+

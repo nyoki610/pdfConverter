@@ -11,7 +11,7 @@ import SwiftUI
 
 enum DeviceType {
     case iPhone, iPad, unknown
-
+    
     static var model: DeviceType {
         let model = UIDevice.current.model
         if model.contains("iPad") {
@@ -32,11 +32,18 @@ enum DeviceType {
     }
     
     var photoSize: CGSize {
-        switch self {
-        case .iPhone: return CGSize(width: 300, height: 200)
-        case .iPad: return CGSize(width: 600, height: 400)
-        default: return CGSize(width: 300, height: 200)
-        }
+        
+        let imageRatio: CGFloat = PageLayout.contentsHeight / PageLayout.imageCellWidth
+        
+        let imageWidth: CGFloat = {
+            switch self {
+            case .iPhone: return 300
+            case .iPad: return 600
+            default: return 300
+            }
+        }()
+    
+        return CGSize(width: imageWidth, height: imageWidth * imageRatio)
     }
 }
 

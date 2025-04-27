@@ -51,7 +51,8 @@ struct ProjectsListView: ResponsiveView {
                             customAlertHandler.controllCustomAlert(
                                 alertTitle: "新規プロジェクトを作成",
                                 label: "タイトルを入力",
-                                action: createNewProject)
+                                action: createNewProject
+                            )
                         }
                         Spacer()
                     }

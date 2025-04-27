@@ -14,17 +14,18 @@ extension CGContext {
     
     func insertText(
         text: String,
+        fontSize: CGFloat,
         cell: Cell,
         verticalAlignment: VerticalAlignment,
         horizontalAlignment: HorizontalAlignment,
         verticalPadding: CGFloat = 0,
         horizontalPadding: CGFloat = 0
     ) {
-
+        
+        /// 文字列の属性を設定
+        let attributes = getAttributes(fontSize: fontSize, horizontalAlignment: horizontalAlignment)
         /// 属性付き文字列を作成
-        let attributedText = NSAttributedString(string: text,
-                                                attributes: getAttributes(horizontalAlignment))
-
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
         /// paddingを考慮した領域を設定
         let paddingRect = getPaddingRect(cell, verticalPadding, horizontalPadding)
         /// 折り返しを考慮した領域を設定
@@ -40,9 +41,8 @@ extension CGContext {
         )
     }
     
-    private func getAttributes(_ horizontalAlignment: HorizontalAlignment) -> [NSAttributedString.Key: Any] {
+    private func getAttributes(fontSize: CGFloat, horizontalAlignment: HorizontalAlignment) -> [NSAttributedString.Key: Any] {
         
-        let fontSize: CGFloat = 10.5
         let mincho = UIFont(name: "NotoSerifJP-SemiBold", size: fontSize) ?? .systemFont(ofSize: fontSize)
 
         /// paragraphStyle を設定

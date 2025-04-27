@@ -15,13 +15,13 @@ extension ImageEditorView {
             if let customImage = content.customImage {
                 Image(uiImage: customImage.resizedToFit(CGSize: deviceType.photoSize))
             } else {
-                dragView(isScreenShot: false)
+                dragView
             }
         }
     }
     
     @ViewBuilder
-    func dragView(isScreenShot: Bool) -> some View {
+    var dragView: some View {
      
         ZStack {
             Image(uiImage: content.image.resizedToFit(maxWidth: deviceType.photoSize.width,
@@ -29,8 +29,7 @@ extension ImageEditorView {
             
             if let customCircle = customCircle {
                 customItemView(customItem: customCircle,
-                               itemType: .circle,
-                               isScreenShot: isScreenShot)
+                               itemType: .circle)
                 .gesture(
                     DragGesture()
                         .updating($circleOffset) { value, state, _ in
@@ -47,8 +46,7 @@ extension ImageEditorView {
             }
             if let customArrow = customArrow {
                 customItemView(customItem: customArrow,
-                               itemType: .arrow,
-                               isScreenShot: isScreenShot)
+                               itemType: .arrow)
                 .gesture(
                     DragGesture()
                         .updating($arrowOffset) { value, state, _ in
@@ -69,7 +67,7 @@ extension ImageEditorView {
     }
     
     @ViewBuilder
-    private func customItemView<T: CustomItem>(customItem: T, itemType: CustomItemType, isScreenShot: Bool) -> some View {
+    private func customItemView<T: CustomItem>(customItem: T, itemType: CustomItemType) -> some View {
         
         let dragOffset: CGSize = {
             switch itemType {
