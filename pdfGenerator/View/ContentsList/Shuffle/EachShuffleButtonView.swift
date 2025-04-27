@@ -9,11 +9,21 @@ import SwiftUI
 
 struct EachShuffleButtonView: View {
     
+    @Environment(\.deviceType) var deviceType
+    
     let content: Content
 
     @Binding var contentIdList: [String]
     
     private var index: Int? {contentIdList.firstIndex {$0 == content.id}}
+    
+    private var ratio: CGFloat {
+        switch deviceType {
+        case .iPhone: return 0.5
+        case .iPad: return 0.3
+        default: return 0.5
+        }
+    }
     
     var body: some View {
         Button {
@@ -24,21 +34,25 @@ struct EachShuffleButtonView: View {
             }
         } label: {
             ZStack {
-                ImageFrame(ratio: 0.5) {
-                    Image(uiImage: content.image.resizedToFit(maxWidth: 150, maxHeight: 100))
+                ImageFrame(ratio: ratio) {
+                    Image(uiImage: content.image.resizedToFit(maxWidth: deviceType.photoSize.width * ratio,
+                                                              maxHeight: deviceType.photoSize.height * ratio))
                 }
                 
                 if let index = index {
-                    Color(.blue.opacity(0.1))
+                    Color(.green.opacity(0.2))
                     Text("\(index+1)")
                         .fontWeight(.bold)
                         .font(.system(size: 24))
                         .foregroundColor(.white)
                         .frame(width: 60, height: 60)
-                        .background(Circle().fill(Color.blue.opacity(0.4)))
+                        .background(Circle().fill(Color.green.opacity(0.5)))
                 }
             }
-            .frame(width: 150, height: 100)
+            .frame(width: deviceType.photoSize.width * ratio,
+                   height: deviceType.photoSize.height * ratio)
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 10)
     }
 }

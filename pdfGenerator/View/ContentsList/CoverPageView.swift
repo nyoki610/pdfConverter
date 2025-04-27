@@ -59,8 +59,8 @@ extension ContentsListView {
                         TLButton(systemName: "rectangle.fill.badge.plus",
                                  label: "表紙ページを変更",
                                  color: .blue,
-                                 verticalPadding: .fixed(nil),
-                                 horizontalPadding: .fixed(nil)) {
+                                 horizontalPadding: .fixed(nil),
+                                 deviceType: deviceType) {
                             
                         }
                                  .allowsHitTesting(false)

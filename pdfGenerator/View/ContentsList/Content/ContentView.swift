@@ -101,8 +101,8 @@ struct ContentView: ResponsiveView {
                 TLButton(systemName: "plus.circle",
                          label: "画像に図形を挿入",
                          color: .blue,
-                         verticalPadding: .fixed(nil),
-                         horizontalPadding: .fixed(nil)) {
+                         horizontalPadding: .fixed(nil),
+                         deviceType: deviceType) {
                     selectedContentId = content.id
                     showImageEditorView = true
                 }
@@ -164,8 +164,8 @@ struct ContentView: ResponsiveView {
                 TLButton(systemName: "plus.circle.fill",
                          label: "過去の入力内容をコピー",
                          color: .blue,
-                         verticalPadding: .fixed(nil),
-                         horizontalPadding: .fixed(nil)) {
+                         horizontalPadding: .fixed(nil),
+                         deviceType: deviceType) {
                     selectedTargetType = targetType
                 }
             }
@@ -202,8 +202,12 @@ extension ContentView {
                         }
                         selectedTargetType = nil
                     } label: {
-                        Text(option.label).centered
-                            .foregroundStyle(.black)
+                        HStack {
+                            Spacer()
+                            Text(option.label)
+                                .foregroundStyle(.black)
+                            Spacer()
+                        }
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal, 20)

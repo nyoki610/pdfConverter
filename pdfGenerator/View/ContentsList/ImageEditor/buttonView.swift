@@ -32,8 +32,8 @@ extension ImageEditorView {
                 TLButton(systemName: "arrow.counterclockwise",
                          label: "過去の編集内容をリセット",
                          color: .red.opacity(0.8),
-                         verticalPadding: .fixed(nil),
-                         horizontalPadding: .fixed(40)) {
+                         horizontalPadding: .fixed(40),
+                         deviceType: deviceType) {
                     content.updateCustomImage(realm: realmService.realm,
                                               customImage: nil)
                     /// 念の為リセット
@@ -59,8 +59,8 @@ extension ImageEditorView {
                 TLButton(systemName: "xmark",
                          label: "閉じる",
                          color: .gray,
-                         verticalPadding: .none,
-                         horizontalPadding: .fixed(40)) {
+                         horizontalPadding: .fixed(40),
+                         deviceType: deviceType) {
                     showImageEditorView = false
                     /// 念の為初期化
                     /// （ここで初期化しないと次回表示時にボタンのラベルが正しく表示されない）
@@ -73,8 +73,8 @@ extension ImageEditorView {
                 TLButton(systemName: "square.and.arrow.down",
                          label: "保存して閉じる",
                          color: .blue,
-                         verticalPadding: .none,
-                         horizontalPadding: .fixed(40)) {
+                         horizontalPadding: .fixed(40),
+                         deviceType: deviceType) {
                     
                     if customCircle != nil || customArrow != nil {
                         let renderer = ImageRenderer(content: dragView)
@@ -109,8 +109,8 @@ extension ImageEditorView {
             TLButton(systemName: "plus",
                      label: "\(itemType.rawValue)を追加",
                      color: .green,
-                     verticalPadding: .fixed(nil),
-                     horizontalPadding: .fixed(40)) {
+                     horizontalPadding: .fixed(40),
+                     deviceType: deviceType) {
                 /// customItem を初期化
                 switch itemType {
                 case .circle: customCircle = CustomCircle()

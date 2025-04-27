@@ -32,7 +32,8 @@ extension ContentsListView {
     func pdfButtonAction() {
         
         PDFGenerator.savePDF(from: realmService.selectedProject,
-                             photoSize: deviceType.photoSize) { success in
+                             photoSize: deviceType.photoSize,
+                             fontSize: 12) { success in
             
             if success {
                 sharedData.path.append(.pdfViewer)
@@ -42,5 +43,6 @@ extension ContentsListView {
                                                 closeAction: {})
             }
         }
+        sharedData.path.append(.pdfViewer)
     }
 }

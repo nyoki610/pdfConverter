@@ -21,22 +21,30 @@ struct ProjectsListView: ResponsiveView {
         NavigationStack(path: $sharedData.path) {
             
             ZStack {
-                ScrollView {
-                    ForEach(Array(realmService.projects.enumerated()), id: \.element.id) { index, project in
-                        Button {
-                            realmService.selectedProjectIndex = index
-                            sharedData.path.append(.contentsList)
-                        } label: {
-                            projectButtonLabel(project: project)
-                        }
-                        .padding(.horizontal, 30)
-                        .padding(.top, 20)
-                    }
+                VStack {
                     
-                    Color.clear
-                        .frame(width: 100, height: 80)
+                    Text("プロジェクトを選択")
+                        .font(.system(size: responsiveSize(20, 24)))
+                        .fontWeight(.bold)
+                        .padding(.top, 20)
+                    
+                    ScrollView {
+                        ForEach(Array(realmService.projects.enumerated()), id: \.element.id) { index, project in
+                            Button {
+                                realmService.selectedProjectIndex = index
+                                sharedData.path.append(.contentsList)
+                            } label: {
+                                projectButtonLabel(project: project)
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 20)
+                        }
+                        
+                        Color.clear
+                            .frame(width: 100, height: 80)
+                    }
+                    .padding(.top, 20)
                 }
-                .padding(.top, 40)
                 
                 VStack {
                     
@@ -46,8 +54,8 @@ struct ProjectsListView: ResponsiveView {
                         TLButton(systemName: "plus.circle.fill",
                                  label: "新規プロジェクトを作成",
                                  color: .green,
-                                 verticalPadding: .fixed(nil),
-                                 horizontalPadding: .infinity) {
+                                 horizontalPadding: .fixed(nil),
+                                 deviceType: deviceType) {
                             customAlertHandler.controllCustomAlert(
                                 alertTitle: "新規プロジェクトを作成",
                                 label: "タイトルを入力",

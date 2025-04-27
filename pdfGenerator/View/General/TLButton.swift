@@ -13,7 +13,7 @@ struct TLButton: View {
     let label: String
     let color: Color
     let size: CGFloat
-    let verticalPadding: VerticalPadding
+    let verticalPadding: CGFloat
     let horizontalPadding: HorizontalPadding
     let action: () -> Void
     
@@ -21,21 +21,28 @@ struct TLButton: View {
          label: String,
          color: Color,
          size: CGFloat?=nil,
-         verticalPadding: VerticalPadding,
+//         verticalPadding: VerticalPadding,
          horizontalPadding: HorizontalPadding,
+         deviceType: DeviceType,
          action: @escaping () -> Void) {
         self.systemName = systemName
         self.label = label
         self.color = color
         self.size = size ?? (DeviceType.model == .iPhone ? 18 : 22)
-        self.verticalPadding = verticalPadding
+        self.verticalPadding = {
+            switch deviceType {
+            case .iPhone: return 4
+            case .iPad: return 10
+            case .unknown: return 4
+            }
+        }()
         self.horizontalPadding = horizontalPadding
         self.action = action
     }
     
-    enum VerticalPadding {
-        case none, fixed(CGFloat?)
-    }
+//    enum VerticalPadding {
+//        case none, fixed(CGFloat?)
+//    }
     
     enum HorizontalPadding {
         case infinity, fixed(CGFloat?)
@@ -66,7 +73,7 @@ struct TLButton: View {
                     .padding(.horizontal, padding ?? 10)
                 }
             }
-            .padding(.vertical, 10)
+            .padding(.vertical, verticalPadding)
             .fontWeight(.bold)
             .font(.system(size: size))
             .foregroundColor(.white)

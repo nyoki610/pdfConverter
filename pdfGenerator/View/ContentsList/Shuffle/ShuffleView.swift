@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ShuffleView: View {
     
+    @Environment(\.deviceType) private var deviceType
+    
     @EnvironmentObject private var realmService: RealmService
     @EnvironmentObject private var alertSharedData: AlertSharedData
     
@@ -37,7 +39,7 @@ struct ShuffleView: View {
             .fontWeight(.medium)
             
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: 0) {
                     ForEach(Array(stride(from: 0, to: realmService.selectedProject.contents.count, by: 2)), id: \.self) { index in
                         HStack(spacing: 0) {
                             // 左側のアイテム
@@ -50,8 +52,6 @@ struct ShuffleView: View {
                             // 右側のアイテム（存在する場合）
                             if index + 1 < realmService.selectedProject.contents.count {
                                 
-                                Spacer()
-                                
                                 EachShuffleButtonView(content: realmService.selectedProject.contents[index+1],
                                                       contentIdList: $contentIdList)
                             }
@@ -63,14 +63,15 @@ struct ShuffleView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 20)
             }
+            .padding(.bottom, 10)
             
             VStack {
                 
                 TLButton(systemName: "shuffle",
                          label: "並び替え",
                          color: .green.opacity(enableShuffleButton ? 1.0 : 0.7),
-                         verticalPadding: .fixed(nil),
-                         horizontalPadding: .fixed(nil)) {
+                         horizontalPadding: .fixed(nil),
+                         deviceType: deviceType) {
 
                     realmService.selectedProject.shuffleContents(realm: realmService.realm,
                                                                  contentIdList: contentIdList)
@@ -81,12 +82,11 @@ struct ShuffleView: View {
                 TLButton(systemName: "xmark",
                          label: "閉じる",
                          color: .gray,
-                         verticalPadding: .fixed(nil),
-                         horizontalPadding: .fixed(nil)) {
+                         horizontalPadding: .fixed(nil),
+                         deviceType: deviceType) {
                     showShuffleSheet = false
                 }
             }
-            .padding(.horizontal, 20)
             
             Spacer()
         }
