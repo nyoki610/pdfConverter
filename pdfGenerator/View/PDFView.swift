@@ -8,7 +8,7 @@ struct PDFViewerView: View {
     
     @State private var pdfDocument: PDFDocument? = PDFDocument(url: PDFGenerator.tempURL)
     
-    @State private var selectedFontSize: FontSize = .tenPointFive
+    @State private var selectedFontSize: FontSize = .twelve
     
     enum FontSize: CGFloat, CaseIterable, Identifiable {
         case ninePointFive = 9.5

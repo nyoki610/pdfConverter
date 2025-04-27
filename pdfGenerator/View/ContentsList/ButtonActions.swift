@@ -43,6 +43,5 @@ extension ContentsListView {
                                                 closeAction: {})
             }
         }
-        sharedData.path.append(.pdfViewer)
     }
 }
